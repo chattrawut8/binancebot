@@ -12,8 +12,7 @@ client = Client(API_KEY, API_SECRET,testnet=True)
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
-        balance = respontext['balance']
-        print("balance = {balance}")
+        print(respontext)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
         order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="MARKET", quantity=float(100))
