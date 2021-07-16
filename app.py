@@ -23,7 +23,7 @@ def welcome():
     return render_template('index.html')
 
 @app.route('/test')
-def welcome():
+def test():
     order_response = order("BUY", 15, "DOGEUSD")
 
 
