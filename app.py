@@ -12,10 +12,10 @@ client = Client(API_KEY, API_SECRET,testnet=True)
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
-        print(respontext)
+        print("your balance is" + respontext.balance)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="MARKET", quantity=float(100))
+        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="MARKET", quantity=float(99))
         
     except Exception as e:
         print("an exception occured - {}".format(e))
