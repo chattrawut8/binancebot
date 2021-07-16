@@ -5,13 +5,15 @@ from binance.enums import *
 
 app = Flask(__name__)
 
-client = Client(config.API_KEY, config.API_SECRET)
+API_KEY = 'RtMIY2hRqqBBi1Fqm7GbarnI96UJKrxgF9oBoXiQLZNUsHSMTkua24OCVIp8wGva'
+API_SECRET = 'VGttXSwMzib26jz97UMOLCqdUJ2Ynn8erYQKtolnK8LFZQdZOGSCK6B5FDI75MVd'
+client = Client(API_KEY, API_SECRET,testnet=True)
 
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        #order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
+        #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
+        order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
@@ -21,12 +23,6 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
 @app.route('/')
 def welcome():
     return render_template('index.html')
-
-@app.route('/test')
-def test():
-    order_response = order("BUY", 15, "DOGEUSD")
-
-
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
