@@ -12,7 +12,7 @@ client = Client(API_KEY, API_SECRET,testnet=True)
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
-        price  = client.get_price(symbol='BTCUSDT')
+        price  = client.get_avg_price(symbol='BTCUSDT')
         print(respontext)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
