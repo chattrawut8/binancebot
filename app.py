@@ -5,8 +5,8 @@ from binance.enums import *
 
 app = Flask(__name__)
 
-API_KEY = 'RtMIY2hRqqBBi1Fqm7GbarnI96UJKrxgF9oBoXiQLZNUsHSMTkua24OCVIp8wGva'
-API_SECRET = 'VGttXSwMzib26jz97UMOLCqdUJ2Ynn8erYQKtolnK8LFZQdZOGSCK6B5FDI75MVd'
+API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
+API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET,testnet=True)
 
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
