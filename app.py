@@ -13,7 +13,7 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=1000)
+        order = client.futures_create_order(symbol=symbol, side=side, type=order_type, quantity=float(15))
         
     except Exception as e:
         print("an exception occured - {}".format(e))
