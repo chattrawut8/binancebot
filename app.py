@@ -22,6 +22,12 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
 def welcome():
     return render_template('index.html')
 
+@app.route('/test')
+def welcome():
+    order_response = order("BUY", 15, "DOGEUSD")
+
+
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     print(request.data)
