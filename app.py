@@ -13,12 +13,12 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
         candles = client.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
-        print(candles.High)
+        print(candles)
         print(respontext)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price="0.18", quantity=float(10/price), timeInForce=TIME_IN_FORCE_GTC,)
+        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price="0.18", quantity=float(10), timeInForce=TIME_IN_FORCE_GTC,)
         
     except Exception as e:
         print("an exception occured - {}".format(e))
