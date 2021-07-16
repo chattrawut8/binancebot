@@ -13,7 +13,7 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
         candles = client.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
-        print(candles)
+        print(candles[0])
         print(respontext)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
