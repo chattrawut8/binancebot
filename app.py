@@ -17,7 +17,7 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         coin_price = client.get_symbol_ticker(symbol="ETHUSDT")
 
         amount = 100 / float(coin_price['price'])
-        precision = 3
+        precision = 4
         buy_quantity = "{:0.0{}f}".format(amount, precision)
 
         #buy_quantity = float(round(100 / float(coin_price['price']), 6))
