@@ -19,7 +19,7 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         buy_quantity = round(100 / float(price['price']))
 
         print(candles[0][1])
-        print(respontext)
+        print(respontext[1]['balance'])
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
