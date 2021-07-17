@@ -13,14 +13,18 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
         candles = client.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
-        info = client.get_symbol_info('BTCUSDT')
-        print(info)
         print(candles[0][1])
         print(respontext)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
+
+        # You ask for the balance
+        balance= client.futures_account_balance(asset='USDT')
+
+        # set the percentage or fraction you want to invest in each order
+        portion_balance = float(balance['free']) * 0.35
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=33445, quantity=float(33445/40), timeInForce=TIME_IN_FORCE_GTC,)
+        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=33445, quantity=portion_balance, timeInForce=TIME_IN_FORCE_GTC,)
         
     except Exception as e:
         print("an exception occured - {}".format(e))
