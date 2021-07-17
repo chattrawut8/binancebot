@@ -18,16 +18,15 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
 
         buy_quantity = float(round(100 / (coin_price['price']), 6))
 
-        #quantity = float(round(100 / (coin_price['price']), 6))
-
         print(type(buy_quantity))
+        print(buy_quantity)
 
         print(coin_price['price'])
         print(respontext[1]['balance'])
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        total_price = float(coin_price['price'])
+        total_price = float(round(coin_price['price'],6))
         order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
         
     except Exception as e:
