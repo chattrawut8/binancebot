@@ -16,9 +16,9 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
 
         coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
 
-        buy_quantity = round(100 / float(coin_price['price']), 6)
+        buy_quantity = float(round(100 / (coin_price['price']), 6))
 
-        quantity = float(round(quantity, 6))
+        #quantity = float(round(100 / (coin_price['price']), 6))
 
         print(type(buy_quantity))
 
