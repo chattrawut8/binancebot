@@ -12,9 +12,9 @@ client = Client(API_KEY, API_SECRET,testnet=True)
 def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
-        candles = client.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
+        candles = client.get_klines(symbol='AAVEUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
 
-        coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
+        coin_price = client.get_symbol_ticker(symbol="AAVEUSDT")
 
         amount = 100 / float(coin_price['price'])
         precision = 6
@@ -31,12 +31,11 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
         
-        amount = float(coin_price['price'])
-        precision = 6
-        total_price = "{:0.0{}f}".format(amount, precision)
+        amount2 = float(coin_price['price'])
+        total_price = "{:0.0{}f}".format(amount2, precision)
 
         print(total_price)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        order = client.futures_create_order(symbol="AAVEUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
         
     except Exception as e:
         print("an exception occured - {}".format(e))
