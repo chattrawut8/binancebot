@@ -30,7 +30,11 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         #order = client.create_order(symbol=symbol, side=side, type=order_type, quantity=quantity)
-        total_price = float(round(float(coin_price['price']),6))
+        
+        amount = float(coin_price['price'])
+        precision = 6
+        total_price = "{:0.0{}f}".format(amount, precision)
+
         print(total_price)
         order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
         
