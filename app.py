@@ -35,8 +35,9 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         total_price = "{:0.0{}f}".format(amount2, precision)
 
         print(total_price)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
-        
+        order = client.futures_create_order(symbol="BTCUSDT",orderId="mainOrder", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        info = client.futures_get_order(symbol="BTCUSDT",orderId="mainOrder", timeInForce=TIME_IN_FORCE_GTC)
+        print(info)
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
@@ -49,7 +50,7 @@ def welcome():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    print(request.data)
+    #print(request.data)
     data = json.loads(request.data)
     
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
