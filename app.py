@@ -36,7 +36,10 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         total_price = "{:0.0{}f}".format(amount2, precision)
 
         print(total_price)
-        order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        if int(orders['positionAmt']) == 0:
+            order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        else:
+            return False
         
     except Exception as e:
         print("an exception occured - {}".format(e))
