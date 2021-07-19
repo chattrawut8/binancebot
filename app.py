@@ -74,3 +74,8 @@ def webhook():
             "code": "error",
             "message": "order failed"
         }
+
+@app.route('/orders', methods=['GET'])
+def orders():
+    orders = client.futures_get_open_orders(symbol="BTCUSDT")
+    print(orders)
