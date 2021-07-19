@@ -13,7 +13,8 @@ def order(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
     try:
         respontext = client.futures_account_balance()
         candles = client.get_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
-
+        orders = client.futures_get_open_orders(symbol="BTCUSDT")
+        print(orders)
         coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
 
         amount = 100 / float(coin_price['price'])
