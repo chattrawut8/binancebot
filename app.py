@@ -11,7 +11,7 @@ client = Client(API_KEY, API_SECRET,testnet=True)
 
 def check_position_status():
     orders = client.futures_position_information(symbol="BTCUSDT")
-    if float(orders['positionAmt']) > 0: return True
+    if float(orders[0]['positionAmt']) > 0: return True
     else:  return False
 
 def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):  
