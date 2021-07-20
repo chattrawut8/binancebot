@@ -37,7 +37,7 @@ def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         else:
             print("position has not ready!")
 
-        check_main_order_satatus()
+        check_main_order_status()
 
         print('your USDT', respontext[1]['balance'])
         print(symbol,' price is ',total_price)
