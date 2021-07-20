@@ -14,6 +14,10 @@ def check_position_status():
     if float(orders[0]['positionAmt']) > 0: return True
     else:  return False
 
+def check_main_order_status():
+    orders = client.futures_get_open_orders(orderId="mainOrder",symbol="BTCUSDT")
+    print('check_main_order_status', orders)
+
 def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):  
     try:
         respontext = client.futures_account_balance()
@@ -32,6 +36,8 @@ def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
             print("position has ready!")
         else:
             print("position has not ready!")
+
+        check_main_order_satatus()
 
         print('your USDT', respontext[1]['balance'])
         print(symbol,' price is ',total_price)
@@ -66,7 +72,7 @@ def welcome():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     #print(request.data)
-    print('/n')
+    print('\n')
     data = json.loads(request.data)
     
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
