@@ -15,7 +15,7 @@ def check_position_status():
     else:  return False
 
 def check_main_order_status():
-    orders = client.futures_get_open_orders(orderId="mainOrder",symbol="BTCUSDT")
+    orders = client.futures_get_open_orders(clientOrderId="mainOrder",symbol="BTCUSDT")
     print('check_main_order_status', orders)
 
 def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):  
@@ -44,7 +44,7 @@ def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         print('your quantity', buy_quantity)
         print(f"sending order {order_type} - {side} {quantity} {symbol}")
 
-        order = client.futures_create_order(orderId="mainOrder",symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        order = client.futures_create_order(clientOrderId="mainOrder",symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
 
     except Exception as e:
         print("an exception occured - {}".format(e))
