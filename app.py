@@ -66,6 +66,7 @@ def welcome():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     #print(request.data)
+    print('/n')
     data = json.loads(request.data)
     
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
