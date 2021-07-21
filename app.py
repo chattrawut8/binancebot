@@ -20,6 +20,7 @@ def check_main_order_status():
     print('total order is', len(orders))
 
     for x in orders:
+        print(x)
         if x['reduceOnly'] == False: return True
     return False
 
@@ -47,7 +48,7 @@ def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         print('your USDT', respontext[1]['balance'])
         print(symbol,' price is ',total_price)
         print('your quantity', buy_quantity)
-        print(f"sending order {order_type} - {side} {quantity} {symbol}")
+        #print(f"sending order {order_type} - {side} {quantity} {symbol}")
 
         if check_main_order_status() != True:
             order = client.futures_create_order(symbol="BTCUSDT", side="BUY", type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
