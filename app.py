@@ -29,6 +29,8 @@ def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):
         respontext = client.futures_account_balance()
         candles = client.futures_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
         print('candles', candles[0])
+        mark_price = client.futures_mark_price(symbol='BTCUSDT')
+        print('futures_mark_price ',mark_price)
         coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
 
         amount = 100 / float(coin_price['price'])
