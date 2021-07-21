@@ -27,7 +27,7 @@ def check_main_order_status():
 def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):  
     try:
         respontext = client.futures_account_balance()
-        candles = client.futures_klines(symbol='ETHUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
+        candles = client.futures_klines(symbol='BTCUSD', interval=Client.KLINE_INTERVAL_4HOUR)
         print('candles', candles)[0]
         coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
 
