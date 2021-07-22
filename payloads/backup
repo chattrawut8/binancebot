@@ -17,23 +17,26 @@ def check_position_status():
 def check_main_order_status():
     orders = client.futures_get_open_orders(symbol="BTCUSDT")
     #print('check_main_order_status', orders)
-    print('total order has open is', len(orders))
+    print('total order is', len(orders))
 
     for x in orders:
         print(x)
         if x['reduceOnly'] == False: return True
     return False
 
-def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
+def open_position(side, quantity, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         balance = client.futures_account_balance()
+        mark_price = client.futures_mark_price(symbol=symbol)
+        print('futures_mark_price ',mark_price)
+        coin_price = client.get_symbol_ticker(symbol=symbol)
 
-        amount = balance / float(high)
+        amount = 100 / float(coin_price['price'])
         precision = 3
-        quantity = "{:0.0{}f}".format(amount, precision)
+        buy_quantity = "{:0.0{}f}".format(amount, precision)
 
-        tick_price = float(high)
-        price = "{:0.0{}f}".format(tick_price, precision)
+        amount2 = float(coin_price['price'])
+        total_price = "{:0.0{}f}".format(amount2, precision)
 
         position_status = check_position_status()
         if position_status == True:
@@ -44,13 +47,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         #check_main_order_status()
 
         print('your balance is', balance[1]['balance'], 'USDT')
-        print('your quantity', quantity)
-        print('Tick price is ', price)
-
+        print(symbol,' price is ',total_price)
+        print('your quantity', buy_quantity)
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
 
         if check_main_order_status() != True:
-            order = client.futures_create_order(symbol=symbol, side=side, type="LIMIT", price=price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            order = client.futures_create_order(symbol=symbol, side=side, type="LIMIT", price=total_price, quantity=buy_quantity, timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
@@ -80,7 +82,8 @@ def webhook():
     low = data['bar']['low']
     symbol = data['ticker']
     side = data['strategy']['order_action'].upper()
-    order_response = open_position(side, symbol, high, low)
+    quantity = data['strategy']['order_contracts']
+    order_response = open_position(side, quantity, symbol, high, low)
 
     if order_response:
         return {

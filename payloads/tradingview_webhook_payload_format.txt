@@ -23,3 +23,28 @@
         "prev_market_position_size": {{strategy.prev_market_position_size}}
     }
 }
+
+{
+    "passphrase": "augustusz",
+    "time": "{{timenow}}",
+    "exchange": "{{exchange}}",
+    "ticker": "{{ticker}}",
+    "bar": {
+        "time": "{{time}}",
+        "open": {{open}},
+        "high": {{high}},
+        "low": {{low}},
+        "close": {{close}}
+    },
+    "strategy": {
+        "position_size": 15,
+        "order_action": "buy",
+        "order_contracts": 15,
+        "order_price": 0.0027451,
+        "order_id": "test",
+        "market_position": "long",
+        "market_position_size": 15,
+        "prev_market_position": "flat",
+        "prev_market_position_size": 0
+    }
+}
