@@ -45,14 +45,14 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         #check_main_order_status()
 
-        print('your balance is', amount, 'USDT')
+        print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
 
         if check_main_order_status() != True:
-            order = client.futures_create_order(symbol=symbol, side=side, type="STOP_LOSS", price=price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            order = client.futures_create_order(symbol=symbol, side=side, type="LIMIT_MAKER", price=price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
