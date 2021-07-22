@@ -43,12 +43,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         stoploss_percent = ((float(high_price) - float(low_price))/float(low_price))*100
         print(stoploss_percent)
-        tp1 = ((float(high_price)*stoploss_percent)/100)+float(high_price)
+        tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
         print(tp1)
-        tp2 = ((float(high_price)*stoploss_percent*2)/100)+float(high_price)
-        print(tp2)
-        tp3 = ((float(high_price)*stoploss_percent*3)/100)+float(high_price)
-        print(tp3)
 
         position_status = check_position_status()
         if position_status == True:
