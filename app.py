@@ -55,10 +55,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
-        print(quantity_tp)
+
         quantity_tp2 = (float(quantity))/2
         quantity_tp2 = "{:0.0{}f}".format(quantity_tp2, precision)
-        print(quantity_tp2)
 
         position_status = check_position_status()
         if position_status == True:
@@ -71,6 +70,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', high_price)
+
+        print(check_main_order_status())
+        print(check_position_status())
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         if check_main_order_status() != True and check_position_status() != True:
@@ -119,7 +121,7 @@ def welcome():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     #print(request.data)
-    print('\n')
+    print('')
     data = json.loads(request.data)
     
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
