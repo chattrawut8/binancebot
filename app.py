@@ -31,8 +31,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         balance = int(float(pre_balance[1]['balance']))
 
-        print(balance)
-
         amount = (balance/1.05) / float(high)
         quantity = "{:0.0{}f}".format(amount, precision)
 
@@ -47,7 +45,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         #check_main_order_status()
 
-        print('your balance is', balance[1]['balance'], 'USDT')
+        print('your balance is', amount, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', price)
 
