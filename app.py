@@ -45,8 +45,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print(stoploss_percent)
         tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
         print(tp1)
-        tp1 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
-        print(tp1)
+        tp2 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
+        print(tp2)
 
         quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
@@ -76,7 +76,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             type="TAKE_PROFIT",stopPrice=tp1, price=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
             order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-            type="TAKE_PROFIT",stopPrice=tp2, price=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+            type="TAKE_PROFIT",stopPrice=tp2, price=tp2, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
