@@ -28,7 +28,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
     try:
         balance = client.futures_account_balance()
 
-        amount = balance / float(high)
+        amount = int(balance - ((balance*5)/100)) / float(high)
         precision = 3
         quantity = "{:0.0{}f}".format(amount, precision)
 
