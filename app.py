@@ -67,11 +67,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         if check_main_order_status() != True:
             order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", 
-            type="TAKE_PROFIT",stopPrice=tp1, quantity=quantity/4, timeInForce=TIME_IN_FORCE_GTC,)
-            order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", 
-            type="TAKE_PROFIT",stopPrice=tp2, quantity=quantity/4, timeInForce=TIME_IN_FORCE_GTC,)
-            order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", 
-            type="TAKE_PROFIT",stopPrice=tp3, quantity=quantity/2, timeInForce=TIME_IN_FORCE_GTC,)
+            type="TAKE_PROFIT",stopPrice=tp1, quantity=float(quantity/4), timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
