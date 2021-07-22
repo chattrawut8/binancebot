@@ -49,7 +49,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print(tp1)
 
         quantity_tp = float(quantity/4)
+        quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
+        print(quantity_tp)
         quantity_tp2 = float(quantity/2)
+        quantity_tp2 = "{:0.0{}f}".format(quantity_tp2, precision)
+        print(quantity_tp2)
 
         position_status = check_position_status()
         if position_status == True:
