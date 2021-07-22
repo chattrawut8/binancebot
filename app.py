@@ -73,7 +73,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        if check_main_order_status() != True or check_position_status() != True:
+        if check_main_order_status() != True and check_position_status() != True:
             if side == "BUY":
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
                 
