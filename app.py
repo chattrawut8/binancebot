@@ -42,9 +42,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         low_price = "{:0.0{}f}".format(tick_price, precision)
 
         stoploss_percent = ((high_price - low_price)/low_price)*100
+        print(stoploss_percent)
         tp1 = ((high_price*stoploss_percent)/100)+high_price
-        tp2 = ((high_price*stoploss_percent*2)/100)+high_price
-        tp3 = ((high_price*stoploss_percent*3)/100)+high_price
+        print(tp1)
 
         position_status = check_position_status()
         if position_status == True:
@@ -63,8 +63,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         if check_main_order_status() != True:
             order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp1, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-            order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp2, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-            order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp3, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
