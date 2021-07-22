@@ -5,9 +5,9 @@ from binance.enums import *
 
 app = Flask(__name__)
 
-API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
-API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
-client = Client(API_KEY, API_SECRET) #testnet=True
+API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
+API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
+client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 
 def check_position_status():
     orders = client.futures_position_information(symbol="BTCUSDT")
@@ -27,9 +27,6 @@ def check_main_order_status():
 def open_position(side, quantity, symbol, order_type=ORDER_TYPE_MARKET):  
     try:
         respontext = client.futures_account_balance()
-        candles = client.futures_klines(symbol='BTCUSDT', interval=Client.KLINE_INTERVAL_4HOUR)
-        print('candles', candles[0])
-        print('candles', candles[1])
         mark_price = client.futures_mark_price(symbol='BTCUSDT')
         print('futures_mark_price ',mark_price)
         coin_price = client.get_symbol_ticker(symbol="BTCUSDT")
