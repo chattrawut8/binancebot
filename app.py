@@ -41,9 +41,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         tick_price = float(low)
         low_price = "{:0.0{}f}".format(tick_price, precision)
 
-        stoploss_percent = ((high_price - low_price)/low_price)*100
+        stoploss_percent = ((float(high_price) - float(low_price))/float(low_price))*100
         print(stoploss_percent)
-        tp1 = ((high_price*stoploss_percent)/100)+high_price
+        tp1 = ((float(high_price)*stoploss_percent)/100)+float(high_price)
         print(tp1)
 
         position_status = check_position_status()
