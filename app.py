@@ -42,14 +42,16 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         high_price = "{:0.0{}f}".format(tick_price, precision)
 
         stoploss_percent = ((float(high_price) - float(low_price))/float(low_price))*100
-        print(stoploss_percent)
-        tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
-        print(tp1)
-        tp2 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
-        print(tp2)
+        print("stoploss % is ", stoploss_percent)
 
-        tp3 = float(((float(high_price)*stoploss_percent*3)/100)+float(high_price))
-        print(tp3)
+        if side == "BUY": tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
+        else: tp1 = float(((float(high_price)*stoploss_percent)/100)-float(high_price))
+
+        if side == "BUY": tp2 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
+        else: tp2 = float(((float(high_price)*stoploss_percent*2)/100)-float(high_price))
+
+        if side == "BUY": tp3 = float(((float(high_price)*stoploss_percent*3)/100)+float(high_price))
+        else: tp2 = float(((float(high_price)*stoploss_percent*2)/100)-float(high_price))
 
         quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
@@ -71,8 +73,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        if side == "BUY":
-            if check_main_order_status() != True or check_position_status() != True:
+        if check_main_order_status() != True or check_position_status() != True:
+            if side == "BUY":
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
                 
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
@@ -87,8 +89,22 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             else:
-                print('--- Order has ready can not open new order!!! ---')
-                return False
+                order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+                
+                order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+
+                order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+
+                order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
+
+                order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+        else:
+            print('--- Order has ready can not open new order!!! ---')
+            return False
 
     except Exception as e:
         print("an exception occured - {}".format(e))
