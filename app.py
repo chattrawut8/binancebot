@@ -35,11 +35,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         amount = (balance/1.05) / float(high)
         quantity = "{:0.0{}f}".format(amount, precision)
 
-        tick_price = float(high)
-        high_price = "{:0.0{}f}".format(tick_price, precision)
-
         tick_price = float(low)
         low_price = "{:0.0{}f}".format(tick_price, precision)
+
+        tick_price = float(high)
+        high_price = "{:0.0{}f}".format(tick_price, precision)
 
         stoploss_percent = ((float(high_price) - float(low_price))/float(low_price))*100
         print(stoploss_percent)
@@ -68,18 +68,24 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
+        if side == "BUY":
+            if check_main_order_status() != True:
+                order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+                
+                order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-        if check_main_order_status() != True:
-            order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-            
-            order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-            type="TAKE_PROFIT",stopPrice=tp1, price=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-            order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-            type="TAKE_PROFIT",stopPrice=tp2, price=tp2, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
-        else:
-            print('--- Order has ready can not open new order!!! ---')
-            return False
+                order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true", closePosition="true",
+                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
+
+                order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true", closePosition="true",
+                type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            else:
+                print('--- Order has ready can not open new order!!! ---')
+                return False
 
     except Exception as e:
         print("an exception occured - {}".format(e))
