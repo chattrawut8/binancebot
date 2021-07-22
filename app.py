@@ -26,6 +26,7 @@ def check_main_order_status():
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
+        
         pre_balance = client.futures_account_balance()
         precision = 3
 
@@ -35,12 +36,15 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity = "{:0.0{}f}".format(amount, precision)
 
         tick_price = float(high)
-        price = "{:0.0{}f}".format(tick_price, precision)
+        high_price = "{:0.0{}f}".format(tick_price, precision)
 
-        stoploss_percent = ((high - low)/low)*100
-        tp1 = ((price*stoploss_percent)/100)+price
-        tp2 = ((price*stoploss_percent*2)/100)+price
-        tp3 = ((price*stoploss_percent*3)/100)+price
+        tick_price = float(low)
+        low_price = "{:0.0{}f}".format(tick_price, precision)
+
+        stoploss_percent = ((high_price - low_price)/low_price)*100
+        tp1 = ((high_price*stoploss_percent)/100)+high_price
+        tp2 = ((high_price*stoploss_percent*2)/100)+high_price
+        tp3 = ((high_price*stoploss_percent*3)/100)+high_price
 
         position_status = check_position_status()
         if position_status == True:
@@ -52,12 +56,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
-        print('Tick price is ', price)
+        print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
 
         if check_main_order_status() != True:
-            order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp1, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp2, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side=side, reduceOnly="true", type="TAKE_PROFIT",price=tp3, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
