@@ -32,9 +32,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         balance = pre_balance[1]['balance']
 
         print(balance)
-        print(int(balance))
 
-        amount = (balance - ((balance*5)/100)) / float(high)
+        amount = (balance/1.05) / float(high)
         quantity = "{:0.0{}f}".format(amount, precision)
 
         tick_price = float(high)
