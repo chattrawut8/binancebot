@@ -48,10 +48,10 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         tp1 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
         print(tp1)
 
-        quantity_tp = float(quantity/4)
+        quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
         print(quantity_tp)
-        quantity_tp2 = float(quantity/2)
+        quantity_tp2 = (float(quantity))/2
         quantity_tp2 = "{:0.0{}f}".format(quantity_tp2, precision)
         print(quantity_tp2)
 
