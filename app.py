@@ -26,10 +26,11 @@ def check_main_order_status():
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
-        balance = client.futures_account_balance()
-
-        amount = int(balance - ((balance*5)/100)) / float(high)
+        pre_balance = client.futures_account_balance()
         precision = 3
+        balance  = "{:0.0{}f}".format(pre_balance, 0)
+
+        amount = (balance - ((balance*5)/100)) / float(high)
         quantity = "{:0.0{}f}".format(amount, precision)
 
         tick_price = float(high)
