@@ -26,8 +26,10 @@ def check_main_order_status():
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
-        balance = client.futures_account_balance()
+        pre_balance = client.futures_account_balance()
         precision = 3
+
+        balance = quantity = "{:0.0{}f}".format(pre_balance['balance'], precision)
 
         print(balance)
         print(int(balance))
