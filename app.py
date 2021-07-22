@@ -59,7 +59,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity_tp2 = (float(quantity))/2
         quantity_tp2 = "{:0.0{}f}".format(quantity_tp2, precision)
 
-        position_status = check_position_status()
+        position_status = check_position_status(symbol)
         if position_status == True:
             print("position has ready!")
         else:
@@ -70,9 +70,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', high_price)
-
-        print(check_main_order_status())
-        print(check_position_status())
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         if check_main_order_status(symbol) != True and check_position_status(symbol) != True:
