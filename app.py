@@ -44,7 +44,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         stoploss_percent = ((float(high_price) - float(low_price))/float(low_price))*100
         print(stoploss_percent)
         tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
-        print(float(high_price)*stoploss_percent)/100)
+        print(float(high_price)*stoploss_percent)/100
         print(tp1)
 
         position_status = check_position_status()
@@ -64,7 +64,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         if check_main_order_status() != True:
             order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
             order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-            type="TAKE_PROFIT",stopPrice=tp1, price=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            type="TAKE_PROFIT",stopPrice=tp1, price=tp1, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
         else:
             print('--- Order has ready can not open new order!!! ---')
             return False
