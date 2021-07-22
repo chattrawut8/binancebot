@@ -10,12 +10,12 @@ API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 
 def check_position_status():
-    orders = client.futures_position_information(symbol="BTCUSDT")
+    orders = client.futures_position_information(symbol=symbol)
     if float(orders[0]['positionAmt']) > 0: return True
     else:  return False
 
 def check_main_order_status():
-    orders = client.futures_get_open_orders(symbol="BTCUSDT")
+    orders = client.futures_get_open_orders(symbol=symbol)
     #print('check_main_order_status', orders)
     print('total order has open is', len(orders))
 
