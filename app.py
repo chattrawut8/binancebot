@@ -29,7 +29,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         pre_balance = client.futures_account_balance()
         precision = 3
 
-        balance = pre_balance[1]['balance']
+        balance = int(pre_balance[1]['balance'])
 
         print(balance)
 
