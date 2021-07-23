@@ -46,14 +46,14 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         print("stoploss % is ", stoploss_percent)
 
-        if side == "BUY": tp1 = float(((float(high_price)*stoploss_percent)/100)+float(high_price))
-        else: tp1 = float(float(high_price) - ((float(high_price)*stoploss_percent)/100))
+        if side == "BUY": tp1 = float(((float(high_price)*float(stoploss_percent))/100)+float(high_price))
+        else: tp1 = float(float(high_price) - ((float(high_price)*float(stoploss_percent))/100))
 
-        if side == "BUY": tp2 = float(((float(high_price)*stoploss_percent*2)/100)+float(high_price))
-        else: tp2 = float(float(high_price) - ((float(high_price)*stoploss_percent*2)/100))
+        if side == "BUY": tp2 = float(((float(high_price)*float(stoploss_percent)*2)/100)+float(high_price))
+        else: tp2 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
 
-        if side == "BUY": tp3 = float(((float(high_price)*stoploss_percent*3)/100)+float(high_price))
-        else: tp2 = float(float(high_price) - ((float(high_price)*stoploss_percent*2)/100))
+        if side == "BUY": tp3 = float(((float(high_price)*float(stoploss_percent)*3)/100)+float(high_price))
+        else: tp3 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
 
         quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
