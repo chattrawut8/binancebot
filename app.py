@@ -2,7 +2,6 @@ import json, config
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
-from math import ceil, floor
 
 app = Flask(__name__)
 
@@ -37,10 +36,10 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity = float(round(amount, precision))
 
         tick_price = float(low)
-        low_price = float(floor(tick_price, precision))
+        low_price = float(round(tick_price, precision))
 
         tick_price = float(high)
-        high_price = float(ceil(tick_price, precision))
+        high_price = float(round(tick_price, precision))
 
         stoploss_percent = float(((float(high_price) - float(low_price))/float(low_price))*100)
         stoploss_percent = float(round(stoploss_percent, precision))
