@@ -1,18 +1,25 @@
-import json, config
+import json
+import config
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
+from decimal import *
+from unicodedata import decimal
 
 app = Flask(__name__)
 
 API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
 API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
-client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
+client = Client(API_KEY, API_SECRET, testnet=True)  # testnet=True
+
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
-    if float(orders[0]['positionAmt']) > 0: return True
-    else:  return False
+    if float(orders[0]['positionAmt']) > 0:
+        return True
+    else:
+        return False
+
 
 def check_main_order_status(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
@@ -20,13 +27,15 @@ def check_main_order_status(symbol):
     print('total order has open is', len(orders))
 
     for x in orders:
-        #print(x)
-        if x['reduceOnly'] == False: return True
+        # print(x)
+        if x['reduceOnly'] == False:
+            return True
     return False
 
-def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
+
+def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
     try:
-        
+
         pre_balance = client.futures_account_balance()
         precision = 3
 
@@ -41,21 +50,34 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         tick_price = float(high)
         high_price = "{:0.0{}f}".format(tick_price, precision)
 
-        stoploss_percent = float(((float(high_price) - float(low_price))/float(low_price))*100)
+        stoploss_percent = float(
+            ((float(high_price) - float(low_price))/float(low_price))*100)
         stoploss_percent = "{:0.0{}f}".format(stoploss_percent, precision)
 
         print("stoploss % is ", stoploss_percent)
 
-        if side == "BUY": tp1 = float(((float(high_price)*float(stoploss_percent))/100)+float(high_price))
-        else: tp1 = float(float(high_price) - ((float(high_price)*float(stoploss_percent))/100))
+        if side == "BUY":
+            tp1 = float(
+                ((float(high_price)*float(stoploss_percent))/100)+float(high_price))
+        else:
+            tp1 = float(float(high_price) -
+                        ((float(high_price)*float(stoploss_percent))/100))
         tp1 = "{:0.0{}f}".format(tp1, precision)
 
-        if side == "BUY": tp2 = float(((float(high_price)*float(stoploss_percent)*2)/100)+float(high_price))
-        else: tp2 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
+        if side == "BUY":
+            tp2 = float(
+                ((float(high_price)*float(stoploss_percent)*2)/100)+float(high_price))
+        else:
+            tp2 = float(float(high_price) -
+                        ((float(high_price)*float(stoploss_percent)*2)/100))
         tp2 = "{:0.0{}f}".format(tp2, precision)
 
-        if side == "BUY": tp3 = float(((float(high_price)*float(stoploss_percent)*3)/100)+float(high_price))
-        else: tp3 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
+        if side == "BUY":
+            tp3 = float(
+                ((float(high_price)*float(stoploss_percent)*3)/100)+float(high_price))
+        else:
+            tp3 = float(float(high_price) -
+                        ((float(high_price)*float(stoploss_percent)*2)/100))
         tp3 = "{:0.0{}f}".format(tp3, precision)
 
         quantity_tp = (float(quantity))/4
@@ -70,7 +92,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             print("position has not ready!")
 
-        #check_main_order_status()
+        # check_main_order_status()
 
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
@@ -81,24 +103,25 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             if side == "BUY":
                 print(high_price)
                 print(quantity)
-                order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-                
+                order = client.futures_create_order(
+                    symbol=symbol, side=side, type="STOP_MARKET", stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+
                 print(tp1)
                 print(quantity_tp)
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                                                    type="TAKE_PROFIT_MARKET", stopPrice=decimal(tp1), quantity=decimal(quantity_tp), timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                                                    type="TAKE_PROFIT_MARKET", stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
+                                                    type="TAKE_PROFIT_MARKET", stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-            #else:
+                                                    type="TAKE_PROFIT_MARKET", stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+            # else:
             #    order = client.futures_create_order(symbol=symbol, side=side, type="LIMIT",price=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
-            #    
+            #
             #    order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
             #    type="LIMIT",price=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 #
@@ -119,17 +142,19 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         return False
 
     return order
- 
+
+
 @app.route('/')
 def welcome():
     return render_template('index.html')
 
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    #print(request.data)
+    # print(request.data)
     print('')
     data = json.loads(request.data)
-    
+
     if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
         return {
             "code": "error",
@@ -154,22 +179,28 @@ def webhook():
             "message": "order failed"
         }
 
+
 @app.route('/orders')
 def orders():
     orders = client.futures_get_open_orders(symbol="BTCUSDT")
     print(orders)
 
 
-def close_position():return 0 #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+def close_position(): return 0  # เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
 
-def open_stoploss():return 0
-def open_takeprofit():return 0
 
-def change_stoploss():return 0
-def change_takeprofit():return 0
+def open_stoploss(): return 0
+def open_takeprofit(): return 0
 
-def close_order(): return 0 #สำหรับปิดออเดอร์ TP/SL เมือ position มีการเปลียนแปลง
 
-def every_1minute(): return 0 #เช็คสถานะราคาทุกๆนาที
+def change_stoploss(): return 0
+def change_takeprofit(): return 0
+
+
+def close_order(): return 0  # สำหรับปิดออเดอร์ TP/SL เมือ position มีการเปลียนแปลง
+
+
+def every_1minute(): return 0  # เช็คสถานะราคาทุกๆนาที
+
 
 def fast_close_position(): return 0
