@@ -28,7 +28,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
     try:
         
         pre_balance = client.futures_account_balance()
-        precision = 3
+        precision = 2
 
         balance = int(float(pre_balance[1]['balance']))
 
@@ -79,12 +79,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         if check_main_order_status(symbol) != True and check_position_status(symbol) != True:
             if side == "BUY":
-                print(high_price)
-                print(quantity)
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
                 
-                print(tp1)
-                print(quantity_tp)
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
