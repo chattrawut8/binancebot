@@ -109,7 +109,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 print(tp1)
                 print(quantity_tp)
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                                                    type="TAKE_PROFIT_MARKET", stopPrice=decimal(tp1), quantity=decimal(quantity_tp), timeInForce=TIME_IN_FORCE_GTC,)
+                                                    type="TAKE_PROFIT_MARKET", stopPrice=decimal(float(tp1)), quantity=decimal(float(quantity_tp)), timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
                                                     type="TAKE_PROFIT_MARKET", stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
