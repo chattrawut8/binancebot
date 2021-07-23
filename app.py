@@ -20,7 +20,7 @@ def check_main_order_status(symbol):
     print('total order has open is', len(orders))
 
     for x in orders:
-        #print(x)
+        print('orders ',x,'\n')
         if x['reduceOnly'] == False: return True
     return False
 
