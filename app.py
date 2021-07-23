@@ -21,6 +21,8 @@ def check_main_order_status(symbol):
 
     for x in orders:
         print('orders ',x,'\n')
+
+    for x in orders:
         if x['reduceOnly'] == False: return True
     return False
 
