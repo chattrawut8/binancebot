@@ -48,15 +48,15 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         if side == "BUY": tp1 = float(((float(high_price)*float(stoploss_percent))/100)+float(high_price))
         else: tp1 = float(float(high_price) - ((float(high_price)*float(stoploss_percent))/100))
-        print(tp1)
+        tp1 = "{:0.0{}f}".format(tp1, precision)
 
         if side == "BUY": tp2 = float(((float(high_price)*float(stoploss_percent)*2)/100)+float(high_price))
         else: tp2 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
-        print(tp2)
+        tp2 = "{:0.0{}f}".format(tp2, precision)
 
         if side == "BUY": tp3 = float(((float(high_price)*float(stoploss_percent)*3)/100)+float(high_price))
         else: tp3 = float(float(high_price) - ((float(high_price)*float(stoploss_percent)*2)/100))
-        print(tp3)
+        tp3 = "{:0.0{}f}".format(tp3, precision)
 
         quantity_tp = (float(quantity))/4
         quantity_tp = "{:0.0{}f}".format(quantity_tp, precision)
