@@ -32,11 +32,7 @@ def check_main_order_status(symbol):
 
     for x in orders:
         if x['reduceOnly'] == False:
-            mainOrder_side == str(x['side'])
-            print('side = ' , x['side'])
-            print('mainOrder_side = ', mainOrder_side)
-            print('type(mainOrder_side) = ',type(mainOrder_side))
-            print('type(side) = ',type(x['side']))
+            mainOrder_side = str(x['side'])
             return True
     return False
 
