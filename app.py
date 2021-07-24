@@ -15,7 +15,9 @@ client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 #client = pymongo.MongoClient("mongodb://heroku_binance_bot:rGiERskh2nSmtD1j@heroku-shard-00-00.rejtv.mongodb.net:27017,heroku-shard-00-01.rejtv.mongodb.net:27017,heroku-shard-00-02.rejtv.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-pjj31n-shard-0&authSource=admin&retryWrites=true&w=majority")
 #db = client.test
 
-mainOrder_side = ''
+
+def cancel_all_order(symbol=symbol):
+    client.futures_cancel_orders(symbol=symbol)
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -103,7 +105,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             mainOrder_side = check_main_order_type(symbol)
             print(mainOrder_side , ' = ' , side)
             if mainOrder_side != side:
-                #cancel_all_order():
+                cancel_all_order(symbol)
                 print("cancel_all_order")
 
         if check_position_status(symbol) == False:
