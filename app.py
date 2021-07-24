@@ -16,7 +16,7 @@ client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 #db = client.test
 
 
-def cancel_all_order(symbol=symbol):
+def cancel_all_order(symbol):
     client.futures_cancel_orders(symbol=symbol)
 
 def check_position_status(symbol):
