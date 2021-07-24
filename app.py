@@ -41,8 +41,6 @@ def check_main_order_status(symbol):
 
     for x in orders:
         if x['reduceOnly'] == False:
-            mainOrder_side = str(x['side'])
-            print('mainOrder_side = ', mainOrder_side)
             return True
     return False
 
@@ -71,17 +69,17 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
         else: tp1 = low_price - (low_price*stoploss_percent/100)
         tp1 = float(round(tp1, precision))
-        print(tp1)
+        print('Take Profit 1 = ',tp1)
 
         if side == "BUY": tp2 = (high_price*(stoploss_percent*2)/100)+high_price
         else: tp2 = low_price - (low_price*(stoploss_percent*2)/100)
         tp2 = float(round(tp2, precision))
-        print(tp2)
+        print('Take Profit 2 = ',tp2)
 
         if side == "BUY": tp3 = (high_price*(stoploss_percent*3)/100)+high_price
         else: tp3 = low_price - (low_price*(stoploss_percent*3)/100)
         tp3 = float(round(tp3, precision))
-        print(tp3)
+        print('Take Profit 3 = ',tp3)
 
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
@@ -103,10 +101,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         
         if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
             mainOrder_side = check_main_order_type(symbol)
-            print(mainOrder_side , ' = ' , side)
             if mainOrder_side != side:
                 cancel_all_order(symbol)
-                print("cancel_all_order")
+                print("New opposite signal so cancel all order")
 
         if check_main_order_status(symbol) == False and check_position_status(symbol) == False:
             if side == "BUY":
