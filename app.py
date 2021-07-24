@@ -15,7 +15,7 @@ client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 #client = pymongo.MongoClient("mongodb://heroku_binance_bot:rGiERskh2nSmtD1j@heroku-shard-00-00.rejtv.mongodb.net:27017,heroku-shard-00-01.rejtv.mongodb.net:27017,heroku-shard-00-02.rejtv.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-pjj31n-shard-0&authSource=admin&retryWrites=true&w=majority")
 #db = client.test
 
-mainOrder_side = ""
+mainOrder_side = ''
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
