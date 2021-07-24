@@ -86,18 +86,17 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             print("position has not ready!")
 
-        check_main_order_status(symbol)
-        print(mainOrder_side , ' = ' , side)
-
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
-        if check_main_order_status(symbol) == True and check_position_status(symbol) == False and mainOrder_side != side:
-            #cancel_all_order():
-            print("cancel_all_order")
+        if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
+            print(mainOrder_side , ' = ' , side)
+            if mainOrder_side != side:
+                #cancel_all_order():
+                print("cancel_all_order")
 
         if check_position_status(symbol) == False:
             if side == "BUY":
