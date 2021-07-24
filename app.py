@@ -35,6 +35,8 @@ def check_main_order_status(symbol):
             mainOrder_side == str(x['side'])
             print('side = ' , x['side'])
             print('mainOrder_side = ', mainOrder_side)
+            print('type(mainOrder_side) = ',type(mainOrder_side))
+            print('type(side) = ',type(x['side']))
             return True
     return False
 
