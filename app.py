@@ -93,9 +93,10 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        print(mainOrder_side , ' = ' , side)
+        
         if check_main_order_status(symbol) == True and check_position_status(symbol) == False and mainOrder_side != side:
             #cancel_all_order():
+            print(mainOrder_side , ' = ' , side)
             print("cancel_all_order")
 
         if check_position_status(symbol) == False:
