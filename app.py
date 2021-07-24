@@ -2,8 +2,8 @@ import json, config
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
-from pymongo import MongoClient
-import pymongo
+#from pymongo import MongoClient
+#import pymongo
 from math import ceil, floor
 
 app = Flask(__name__)
