@@ -12,8 +12,10 @@ API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
 API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 
-client = pymongo.MongoClient("mongodb://heroku_binance_bot:rGiERskh2nSmtD1j@heroku-shard-00-00.rejtv.mongodb.net:27017,heroku-shard-00-01.rejtv.mongodb.net:27017,heroku-shard-00-02.rejtv.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-pjj31n-shard-0&authSource=admin&retryWrites=true&w=majority")
-db = client.test
+#client = pymongo.MongoClient("mongodb://heroku_binance_bot:rGiERskh2nSmtD1j@heroku-shard-00-00.rejtv.mongodb.net:27017,heroku-shard-00-01.rejtv.mongodb.net:27017,heroku-shard-00-02.rejtv.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-pjj31n-shard-0&authSource=admin&retryWrites=true&w=majority")
+#db = client.test
+
+mainOrder_side = ""
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -29,7 +31,9 @@ def check_main_order_status(symbol):
         print('orders ',x,'\n')
 
     for x in orders:
-        if x['reduceOnly'] == False: return True
+        if x['reduceOnly'] == False:
+            mainOrder_side == 'x['']'
+            return True
     return False
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
@@ -88,7 +92,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('Tick price is ', high_price)
 
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
-        if check_main_order_status(symbol) != True and check_position_status(symbol) != True:
+
+        if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
+            cancel_all_order():
+
+        if check_position_status(symbol) == False:
             if side == "BUY":
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
                 
