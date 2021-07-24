@@ -32,7 +32,7 @@ def check_main_order_type(symbol):
     return 0
 
 def check_main_order_status(symbol):
-    orders = client.futures_get_open_orders(symbol=symbol)
+    orders = client.futures_get_open_orders(symbol)
     #print('check_main_order_status', orders)
     print('total order has open is', len(orders))
 
