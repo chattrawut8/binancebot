@@ -2,12 +2,18 @@ import json, config
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
+from pymongo import MongoClient
+import pymongo
+from math import ceil, floor
 
 app = Flask(__name__)
 
 API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
 API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
+
+client = pymongo.MongoClient("mongodb://heroku_binance_bot:rGiERskh2nSmtD1j@heroku-shard-00-00.rejtv.mongodb.net:27017,heroku-shard-00-01.rejtv.mongodb.net:27017,heroku-shard-00-02.rejtv.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-pjj31n-shard-0&authSource=admin&retryWrites=true&w=majority")
+db = client.test
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -38,10 +44,10 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity = float(round(amount, precision))
 
         tick_price = float(low)
-        low_price = float(round(tick_price, precision))
+        low_price = float(floor(tick_price))
 
         tick_price = float(high)
-        high_price = float(round(tick_price, precision))
+        high_price = float(ceil(tick_price))
 
         stoploss_percent = float(((float(high_price) - float(low_price))/float(low_price))*100)
         stoploss_percent = float(round(stoploss_percent, precision))
