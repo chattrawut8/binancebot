@@ -22,6 +22,13 @@ def check_position_status(symbol):
     if float(orders[0]['positionAmt']) > 0: return True
     else:  return False
 
+def check_main_order_type(symbol):
+    orders = client.futures_get_open_orders(symbol=symbol)
+    for x in orders:
+        if x['reduceOnly'] == False:
+            return str(x['side'])
+    return 0
+
 def check_main_order_status(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
     #print('check_main_order_status', orders)
@@ -93,6 +100,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
+            mainOrder_side = check_main_order_type(symbol)
             print(mainOrder_side , ' = ' , side)
             if mainOrder_side != side:
                 #cancel_all_order():
