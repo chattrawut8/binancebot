@@ -74,7 +74,7 @@ def check_hit_stoploss(symbol,high,low):
 
 def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     if check_hit_stoploss(symbol=symbol, high=high, low=low) == True or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
-        cancel_all_order(symbol = symbol ,high_price = 0 ,low_price = 0)
+        cancel_all_order(symbol = symbol)
 
 def change_stoploss():
     with open('orders.json', 'r') as openfile:
