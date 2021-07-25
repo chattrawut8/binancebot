@@ -27,16 +27,21 @@ def check_main_order_type(symbol):
 
 def check_main_order_status(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
-    #print('check_main_order_status', orders)
     print('total order has open is', len(orders))
-
-    #for x in orders:
-    #    print('orders ',x,'\n')
-
     for x in orders:
         if x['reduceOnly'] == False:
             return True
     return False
+
+def save_orders_json(symbol):
+    orders = client.futures_get_open_orders(symbol=symbol)
+    with open('orders.json', 'w') as outfile:
+        json.dump(orders, outfile)
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+
+    for x in json_object:
+        print('order reduceOnly ' , x['reduceOnly'])
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -114,34 +119,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
 
-
-                orders = client.futures_get_open_orders(symbol=symbol)
-                """for x in orders:
-                    if x['reduceOnly'] == False:
-                        return True
-                return False
-
-                data = {}
-                data[symbol] = []
-                data[symbol].append({
-                    'orderId': '0',
-                    'orderType': 'main',
-                    'status': 'wait',
-                    'side': "side",
-                    'price': 0,
-                    'quantity': 0,
-                    'riskToReward': "1to3"
-                })"""
-
-                with open('orders.json', 'w') as outfile:
-                    json.dump(orders, outfile)
-
-                with open('orders.json', 'r') as openfile:
-                    # Reading from json file
-                    json_object = json.load(openfile)
-                
-                print(json_object)
-                print(type(json_object))
+                save_orders_json(symbol)
 
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
@@ -157,6 +135,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
+
+                save_orders_json(symbol)
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
