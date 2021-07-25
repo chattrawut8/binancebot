@@ -45,6 +45,8 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
+    index = [x.reduceOnly for x in json_object].index(False)
+
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         pre_balance = client.futures_account_balance()
@@ -183,14 +185,31 @@ def webhook():
             "message": "order failed"
         }
 
-@app.route('/orders')
-def orders():
-    orders = client.futures_get_open_orders(symbol="BTCUSDT")
-    print(orders)
+"""
+def check_hit_stoploss(symbol):
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
 
+    #index = json_object.index('reduceOnly'=False)
+    index = [x.reduceOnly for x in json_object].index(False)
+
+    if json_object[index]['side'] == 'BUY':
+        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
+        if stoploss_order['price'] >= high_price:
+            return True
+        else:
+            return False
+    else:
+        len_orders = int(len(json_object)) - 1
+        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
+        if stoploss_order['price'] <= low_price:
+              return True
+        else:
+            return False
 
 def close_position():return 0 #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-
+    if check_hit_stoploss() == True:
+"""
 def open_stoploss():return 0
 def open_takeprofit():return 0
 
