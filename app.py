@@ -40,6 +40,13 @@ def check_main_order_status(symbol):
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
+
+        aDict = {"a":54, "b":87}
+        jsonString = json.dumps(aDict)
+        jsonFile = open("data.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
+
         data = {}
         data["symbol"] = []
         data["symbol"].append({
