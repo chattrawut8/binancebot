@@ -50,6 +50,58 @@ def save_orders_json(symbol):
 
     print('MAIN ORDER \n',client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId']))
 
+def check_hit_stoploss(symbol,high,low):
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+
+    index = [x['reduceOnly'] for x in json_object].index(False)
+
+    if json_object[index]['side'] == 'BUY':
+        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
+        #ราคาทะลุ stoploss ขา BUY
+        if high < stoploss_order['stopPrice']:
+            return True
+        else:
+            return False
+    else:
+        len_orders = int(len(json_object)) - 1
+        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
+        #ราคาทะลุ stoploss ขา SELL
+        if low > stoploss_order['stopPrice']:
+              return True
+        else:
+            return False
+
+def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+    if check_hit_stoploss(symbol=symbol, high=high, low=low) == True or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
+        cancel_all_order(symbol = symbol ,high_price = 0 ,low_price = 0)
+
+def change_stoploss():
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    len_order = len(json_object)
+
+    if len_order == 5: #risk/reward 1/3
+        if check_hit_tp2() == True: 
+            change_stoploss_to_1reward()
+        elif check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 1/3
+            change_stoploss_to_0risk()
+    elif len_order == 4: #risk/reward 1/2
+        if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 1/2
+            change_stoploss_to_0risk()
+    elif len_order == 3: #risk/reward 1/1
+        if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
+            change_stoploss_to_0risk()
+
+def check_every_1minute(symbol, high, low):
+    try:
+        if check_position_status == True:
+            change_stoploss()
+        check_close_order(symbol=symbol, high=high, low=low)
+    except Exception as e:
+        print("an exception occured - {}".format(e))
+        return False
+
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         pre_balance = client.futures_account_balance()
@@ -188,37 +240,32 @@ def webhook():
             "message": "order failed"
         }
 
-def check_hit_stoploss(symbol,high_price,low_price):
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
+@app.route('/check', methods=['POST'])
+def webhook():
+    #print(request.data)
+    print('')
+    data = json.loads(request.data)
+    
+    if data['passphrase'] != config.WEBHOOK_PASSPHRASE:
+        return {
+            "code": "error",
+            "message": "Nice try, invalid passphrase"
+        }
+    high = data['bar']['high']
+    low = data['bar']['low']
+    symbol = data['ticker']
+    check_response = check_every_1minute(symbol, high, low)
 
-    index = [x['reduceOnly'] for x in json_object].index(False)
-
-    if json_object[index]['side'] == 'BUY':
-        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
-        if stoploss_order['price'] >= high_price:
-            return True
-        else:
-            return False
+    if check_response:
+        return {
+            "code": "success",
+            "message": "order executed"
+        }
     else:
-        len_orders = int(len(json_object)) - 1
-        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
-        if stoploss_order['price'] <= low_price:
-              return True
-        else:
-            return False
+        print("order failed")
 
-"""def close_position():return 0 #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    if check_hit_stoploss() == True:
+        return {
+            "code": "error",
+            "message": "order failed"
+        }
 
-def open_stoploss():return 0"""
-def open_takeprofit():return 0
-
-def change_stoploss():return 0
-def change_takeprofit():return 0
-
-def close_order(): return 0 #สำหรับปิดออเดอร์ TP/SL เมือ position มีการเปลียนแปลง
-
-def every_1minute(): return 0 #เช็คสถานะราคาทุกๆนาที
-
-def fast_close_position(): return 0
