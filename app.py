@@ -40,22 +40,6 @@ def check_main_order_status(symbol):
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
-        """
-        data = {}
-        data["symbol"] = []
-        data["symbol"].append({
-            'orderId': '0',
-            'orderType': 'main',
-            'status': 'wait',
-            'side': "side",
-            'price': 0,
-            'quantity': 0,
-            'riskToReward': "1to3"
-        })
-
-        with open('orders.json', 'w') as outfile:
-            json.dump(data, outfile)"""
-
         with open('orders.json', 'r') as openfile:
             # Reading from json file
             json_object = json.load(openfile)
