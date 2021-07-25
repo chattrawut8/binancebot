@@ -41,6 +41,13 @@ def check_main_order_status(symbol):
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
 
+        with open('orders.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+        
+        print(json_object)
+        print(type(json_object))
+
         aDict = {"a":54, "b":87}
         jsonString = json.dumps(aDict)
         jsonFile = open("data.json", "w")
