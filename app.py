@@ -41,7 +41,7 @@ def save_orders_json(symbol):
         json_object = json.load(openfile)
 
     for x in json_object:
-        print('order reduceOnly ' , x['reduceOnly'])
+        print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
