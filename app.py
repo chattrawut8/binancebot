@@ -9,25 +9,6 @@ app = Flask(__name__)
 API_KEY = '6041331240427dbbf26bd671beee93f6686b57dde4bde5108672963fad02bf2e'
 API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
-
-data = {}
-data["symbol"] = []
-data["symbol"].append({
-    'orderId': '0',
-    'orderType': 'main',
-    'status': 'wait',
-    'side': "side",
-    'price': 0,
-    'quantity': 0,
-    'riskToReward': "1to3"
-})
-
-with open('orders.txt', 'w') as outfile:
-    json.dump(data, outfile)
-
-with open('orders.json', 'r') as openfile:
-    # Reading from json file
-    json_object = json.load(openfile)
   
 print(json_object)
 print(type(json_object))
@@ -62,7 +43,25 @@ def check_main_order_status(symbol):
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
-        
+        data = {}
+        data["symbol"] = []
+        data["symbol"].append({
+            'orderId': '0',
+            'orderType': 'main',
+            'status': 'wait',
+            'side': "side",
+            'price': 0,
+            'quantity': 0,
+            'riskToReward': "1to3"
+        })
+
+        with open('orders.json', 'w') as outfile:
+            json.dump(data, outfile)
+
+        with open('orders.json', 'r') as openfile:
+            # Reading from json file
+            json_object = json.load(openfile)
+            
         pre_balance = client.futures_account_balance()
         precision = 2
 
