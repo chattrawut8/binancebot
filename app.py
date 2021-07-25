@@ -35,17 +35,14 @@ def check_main_order_status(symbol):
 
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
+    orders = sorted(orders, key=lambda x: x['stopPrice'])
+
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     print('\n' , 'total order ' , len(json_object))
     for x in json_object:
-        print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
-
-    sort_json_object = sorted(json_object, key=lambda x: x['stopPrice'])
-    print('\n' , 'SORTED total order ' , len(json_object))
-    for x in sort_json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
