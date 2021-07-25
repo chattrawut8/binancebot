@@ -27,7 +27,7 @@ def check_main_order_type(symbol):
 
 def check_main_order_status(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
-    print('total order has open is', len(orders))
+    #print('total order has open is', len(orders))
     for x in orders:
         if x['reduceOnly'] == False:
             return True
@@ -39,7 +39,7 @@ def save_orders_json(symbol):
         json.dump(orders, outfile)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-
+    print('\n' , 'total order ' , len(json_object))
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
