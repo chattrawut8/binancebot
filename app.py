@@ -43,6 +43,11 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
+    sort_json_object = sorted(json_object.items(), key=lambda x: x[16], reverse=True)
+    print('\n' , 'SORTED total order ' , len(json_object))
+    for x in sort_json_object:
+        print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
+
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         pre_balance = client.futures_account_balance()
