@@ -45,7 +45,10 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
-    print('Main Order Index = ' , [x['reduceOnly'] for x in json_object].index(False)) 
+    index = [x['reduceOnly'] for x in json_object].index(False)
+    print('Main Order Index = ' , index) 
+
+    print('MAIN ORDER \n',client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId']))
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -185,13 +188,11 @@ def webhook():
             "message": "order failed"
         }
 
-"""
-def check_hit_stoploss(symbol):
+def check_hit_stoploss(symbol,high_price,low_price):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
-    #index = json_object.index('reduceOnly'=False)
-    index = [x.reduceOnly for x in json_object].index(False)
+    index = [x['reduceOnly'] for x in json_object].index(False)
 
     if json_object[index]['side'] == 'BUY':
         stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
@@ -207,10 +208,10 @@ def check_hit_stoploss(symbol):
         else:
             return False
 
-def close_position():return 0 #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+"""def close_position():return 0 #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     if check_hit_stoploss() == True:
-"""
-def open_stoploss():return 0
+
+def open_stoploss():return 0"""
 def open_takeprofit():return 0
 
 def change_stoploss():return 0
