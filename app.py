@@ -43,7 +43,7 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
-    sort_json_object = sorted(json_object, key=lambda x: x[15])
+    sort_json_object = sorted(json_object, key=lambda x: x['stopPrice'])
     print('\n' , 'SORTED total order ' , len(json_object))
     for x in sort_json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
