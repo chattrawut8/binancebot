@@ -40,45 +40,6 @@ def check_main_order_status(symbol):
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
-
-        with open('orders.json', 'r') as openfile:
-            # Reading from json file
-            json_object = json.load(openfile)
-        
-        print(json_object)
-        print(type(json_object))
-
-        aDict = {"a":54, "b":87}
-        jsonString = json.dumps(aDict)
-        jsonFile = open("data.json", "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
-
-        data = {}
-        data["symbol"] = []
-        data["symbol"].append({
-            'orderId': '0',
-            'orderType': 'main',
-            'status': 'wait',
-            'side': "side",
-            'price': 0,
-            'quantity': 0,
-            'riskToReward': "1to3"
-        })
-
-        with open('orders.json', 'w') as outfile:
-            json.dump(data, outfile)
-
-        with open('orders.json', 'r') as openfile:
-            # Reading from json file
-            json_object = json.load(openfile)
-        
-        print(json_object)
-        print(type(json_object))
-
-        outfile.close() 
-        openfile.close() 
-            
         pre_balance = client.futures_account_balance()
         precision = 2
 
@@ -154,11 +115,33 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
 
 
-                #orders = client.futures_get_open_orders(symbol=symbol)
-                #for x in orders:
-                #    if x['reduceOnly'] == False:
-                #        return True
-                #return False
+                orders = client.futures_get_open_orders(symbol=symbol)
+                """for x in orders:
+                    if x['reduceOnly'] == False:
+                        return True
+                return False
+
+                data = {}
+                data[symbol] = []
+                data[symbol].append({
+                    'orderId': '0',
+                    'orderType': 'main',
+                    'status': 'wait',
+                    'side': "side",
+                    'price': 0,
+                    'quantity': 0,
+                    'riskToReward': "1to3"
+                })"""
+
+                with open('orders.json', 'w') as outfile:
+                    json.dump(orders, outfile)
+
+                with open('orders.json', 'r') as openfile:
+                    # Reading from json file
+                    json_object = json.load(openfile)
+                
+                print(json_object)
+                print(type(json_object))
 
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
