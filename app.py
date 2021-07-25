@@ -61,6 +61,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         
         print(json_object)
         print(type(json_object))
+
+        outfile.close() 
+        openfile.close() 
             
         pre_balance = client.futures_account_balance()
         precision = 2
