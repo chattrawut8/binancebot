@@ -28,7 +28,6 @@ def cancel_all_order(symbol):
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
         except BinanceAPIException as e:
-            print('\nClose old order\ncan not find ',x['orderId'])
             client = Client(API_KEY, API_SECRET)
             continue
     
