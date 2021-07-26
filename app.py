@@ -81,7 +81,7 @@ def check_hit_stoploss(symbol,high,low):
         else:
             return False
 
-def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+"""def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     if check_hit_stoploss(symbol=symbol, high=high, low=low) == True or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
         cancel_all_order(symbol = symbol)
 
@@ -102,6 +102,7 @@ def change_stoploss():
         if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_stoploss_to_0risk()
 
+
 def check_every_1minute(symbol, high, low):
     try:
         if check_position_status(symbol) == True:
@@ -110,6 +111,7 @@ def check_every_1minute(symbol, high, low):
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
+"""
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -261,7 +263,7 @@ def webhook():
             "message": "order failed"
         }
 
-@app.route('/check', methods=['POST'])
+"""@app.route('/check', methods=['POST'])
 def webhook():
     #print(request.data)
     print('')
@@ -289,4 +291,4 @@ def webhook():
             "code": "error",
             "message": "order failed"
         }
-
+"""
