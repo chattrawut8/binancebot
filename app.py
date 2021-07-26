@@ -85,9 +85,13 @@ def check_hit_stoploss(symbol):
             client = Client(API_KEY, API_SECRET)
             cancel_all_order(symbol)
 
-def check_close_order(symbol=symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    print('!!!check_hit_stoploss!!!')
-    check_hit_stoploss(symbol=symbol)
+def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+    try:
+        print('!!!check_hit_stoploss!!!')
+        check_hit_stoploss(symbol=symbol)
+    except Exception as e:
+        print("an exception occured - {}".format(e))
+        return False
 
 """def change_stoploss():
     with open('orders.json', 'r') as openfile:
