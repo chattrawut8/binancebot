@@ -56,14 +56,7 @@ def check_main_order_status(symbol):
 
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
-
-    for x in orders:
-        print(x['orderId'])
-
     orders = sorted(orders, key=lambda x: x['stopPrice'])
-    print('\n')
-    for x in orders:
-        print(x['orderId'])
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
@@ -85,8 +78,6 @@ def check_hit_SL_TP(symbol):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
 
-        with open('orders.json', 'r') as openfile:
-            json_object = json.load(openfile)
         for x in json_object:
             print(x['orderId'])
 
