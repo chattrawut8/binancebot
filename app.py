@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
 from math import ceil, floor
+from binance.exceptions import BinanceAPIException
 
 app = Flask(__name__)
 
@@ -18,8 +19,9 @@ def cancel_all_order(symbol):
     for x in json_object:
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
-        except print(0):
+        except BinanceAPIException as e:
             print('can not find ',x['orderId'])
+            client = Client(API_KEY, API_SECRET)
             continue
 
 def check_position_status(symbol):
