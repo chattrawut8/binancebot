@@ -11,7 +11,16 @@ API_SECRET = '560764a399e23e9bc5e24d041bd3b085ee710bf08755d26ff4822bfd9393b11e'
 client = Client(API_KEY, API_SECRET, testnet=True) #testnet=True
 
 def cancel_all_order(symbol):
-    client.futures_cancel_all_open_orders(symbol=symbol)
+    #client.futures_cancel_all_open_orders(symbol=symbol)
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    
+    for x in json_object:
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
+        except print(0):
+            print('can not find ',x['orderId'])
+            pass
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -95,7 +104,7 @@ def change_stoploss():
 
 def check_every_1minute(symbol, high, low):
     try:
-        if check_position_status == True:
+        if check_position_status(symbol) == True:
             change_stoploss()
         check_close_order(symbol=symbol, high=high, low=low)
     except Exception as e:
@@ -164,36 +173,48 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
         if check_main_order_status(symbol) == False and check_position_status(symbol) == False:
             if side == "BUY":
-                order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+                order = client.futures_create_order(symbol=symbol, side=side,
+                type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
                 
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp3, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp3, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
+                type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 save_orders_json(symbol)
 
             elif side == "SELL":
-                order = client.futures_create_order(symbol=symbol, side=side, type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
+                order = client.futures_create_order(symbol=symbol, side=side,
+                type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
                 
                 order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
-                type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
+                type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,
+                workingType='MARK_PRICE')
 
                 save_orders_json(symbol)
         else:
