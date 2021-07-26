@@ -67,15 +67,20 @@ def check_hit_stoploss(symbol):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
+    print("pass1")
     index = [x['reduceOnly'] for x in json_object].index(False)
-
+    print("pass2")
     if json_object[index]['side'] == 'BUY':
         try:
+            print("pass3")
             client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
+            print("pass4")
         except BinanceAPIException as e:
+            print("pass5")
             print('\n Has hit stoploss BUY order!')
             client = Client(API_KEY, API_SECRET)
             cancel_all_order(symbol)
+            print("pass6")
     else:
         len_orders = int(len(json_object)) - 1
         try:
