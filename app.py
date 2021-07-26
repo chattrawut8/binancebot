@@ -74,21 +74,15 @@ def save_orders_json(symbol):
     index = [x['reduceOnly'] for x in json_object].index(False)
     print('Main Order Index = ' , index) 
 
-    print('MAIN ORDER \n',client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId']))
-
 def check_hit_stoploss(symbol):
     client = Client(API_KEY, API_SECRET)
     
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-    index = -1
-    try:
-        print(json_object)
-        index = [x['reduceOnly'] for x in json_object].index(False)
-    except Exception as e:
-        print('dont have any order')
 
-    print('pass1')
+    try:
+        index = [x['reduceOnly'] for x in json_object].index(False)
+        print('pass1')
     if json_object[index]['side'] == 'BUY':
         try:
             print('pass2')
@@ -106,6 +100,9 @@ def check_hit_stoploss(symbol):
             print('\n Has hit stoploss SELL order!')
             client = Client(API_KEY, API_SECRET)
             cancel_all_order(symbol)
+
+    except Exception as e:
+        print('dont have any order')
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     try:
