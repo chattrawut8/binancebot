@@ -15,11 +15,9 @@ print("Start Bot")
 load_json_orders()
 
 def load_json_orders():
-    orders = client.futures_get_open_orders(symbol="ETHUSDT")
-    orders = sorted(orders, key=lambda x: x['stopPrice'])
-    print(orders)
+    client.futures_cancel_all_open_orders(symbol='ETHUSDT')
     with open('orders.json', 'w') as outfile:
-        json.dump(orders, outfile)
+        json.dump('', outfile)
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
