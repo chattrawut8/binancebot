@@ -63,26 +63,27 @@ def save_orders_json(symbol):
     print('MAIN ORDER \n',client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId']))
 
 def check_hit_stoploss(symbol,high,low):
+    client = Client(API_KEY, API_SECRET)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
     index = [x['reduceOnly'] for x in json_object].index(False)
 
     if json_object[index]['side'] == 'BUY':
-        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
-        #ราคาทะลุ stoploss ขา BUY
-        if high < stoploss_order['stopPrice']:
-            return True
-        else:
-            return False
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
+        except BinanceAPIException as e:
+            print('\n Has hit stoploss order!')
+            client = Client(API_KEY, API_SECRET)
+            cancel_all_order(symbol)
     else:
         len_orders = int(len(json_object)) - 1
-        stoploss_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
-        #ราคาทะลุ stoploss ขา SELL
-        if low > stoploss_order['stopPrice']:
-              return True
-        else:
-            return False
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
+        except BinanceAPIException as e:
+            print('\n Has hit stoploss order!')
+            client = Client(API_KEY, API_SECRET)
+            cancel_all_order(symbol)
 
 def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     if check_hit_stoploss(symbol=symbol, high=high, low=low) == True:# or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
