@@ -11,6 +11,8 @@ API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
 API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
 
+#test
+
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 with open('orders.json', 'w') as outfile:
