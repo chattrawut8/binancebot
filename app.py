@@ -21,7 +21,7 @@ def cancel_all_order(symbol):
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
         except BinanceAPIException as e:
-            print('can not find ',x['orderId'])
+            print('\nClose old order\ncan not find ',x['orderId'])
             client = Client(API_KEY, API_SECRET)
             continue
 
@@ -84,11 +84,11 @@ def check_hit_stoploss(symbol,high,low):
         else:
             return False
 
-"""def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    if check_hit_stoploss(symbol=symbol, high=high, low=low) == True or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
+def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+    if check_hit_stoploss(symbol=symbol, high=high, low=low) == True:# or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
         cancel_all_order(symbol = symbol)
 
-def change_stoploss():
+"""def change_stoploss():
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     len_order = len(json_object)
@@ -104,17 +104,17 @@ def change_stoploss():
     elif len_order == 3: #risk/reward 1/1
         if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_stoploss_to_0risk()
-
+"""
 
 def check_every_1minute(symbol, high, low):
     try:
-        if check_position_status(symbol) == True:
-            change_stoploss()
+        #if check_position_status(symbol) == True:
+        #    change_stoploss()
         check_close_order(symbol=symbol, high=high, low=low)
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
-"""
+
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -256,7 +256,7 @@ def webhook():
             "message": "order failed"
         }
 
-"""@app.route('/check', methods=['POST'])
+@app.route('/check', methods=['POST'])
 def webhook():
     #print(request.data)
     print('')
@@ -284,4 +284,3 @@ def webhook():
             "code": "error",
             "message": "order failed"
         }
-"""
