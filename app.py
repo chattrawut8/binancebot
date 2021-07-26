@@ -12,12 +12,9 @@ API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
 
 print("Start Bot")
-load_json_orders()
-
-def load_json_orders():
-    client.futures_cancel_all_open_orders(symbol='ETHUSDT')
-    with open('orders.json', 'w') as outfile:
-        json.dump('', outfile)
+client.futures_cancel_all_open_orders(symbol='ETHUSDT')
+with open('orders.json', 'w') as outfile:
+    json.dump('', outfile)
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
