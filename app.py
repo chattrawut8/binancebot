@@ -83,23 +83,23 @@ def check_hit_stoploss(symbol):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         print('pass1')
-    if json_object[index]['side'] == 'BUY':
-        try:
-            print('pass2')
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
-        except BinanceAPIException as e:
-            print('\n Has hit stoploss BUY order!')
-            client = Client(API_KEY, API_SECRET)
-            cancel_all_order(symbol)
-    else:
-        len_orders = int(len(json_object)) - 1
-        try:
-            print('pass3')
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
-        except BinanceAPIException as e:
-            print('\n Has hit stoploss SELL order!')
-            client = Client(API_KEY, API_SECRET)
-            cancel_all_order(symbol)
+        if json_object[index]['side'] == 'BUY':
+            try:
+                print('pass2')
+                client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
+            except BinanceAPIException as e:
+                print('\n Has hit stoploss BUY order!')
+                client = Client(API_KEY, API_SECRET)
+                cancel_all_order(symbol)
+        else:
+            len_orders = int(len(json_object)) - 1
+            try:
+                print('pass3')
+                client.futures_cancel_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
+            except BinanceAPIException as e:
+                print('\n Has hit stoploss SELL order!')
+                client = Client(API_KEY, API_SECRET)
+                cancel_all_order(symbol)
 
     except Exception as e:
         print('dont have any order')
