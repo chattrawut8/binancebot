@@ -61,6 +61,9 @@ def save_orders_json(symbol):
         print(x['orderId'])
 
     orders = sorted(orders, key=lambda x: x['stopPrice'])
+    print('\n')
+    for x in orders:
+        print(x['orderId'])
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
