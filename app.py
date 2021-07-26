@@ -72,6 +72,7 @@ def check_hit_stoploss(symbol):
         json_object = json.load(openfile)
     index = -1
     try:
+        print(json_object)
         index = [x['reduceOnly'] for x in json_object].index(False)
     except Exception as e:
         print('dont have any order')
