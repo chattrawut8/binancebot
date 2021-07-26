@@ -249,7 +249,7 @@ def webhook():
 
 @app.route('/check', methods=['POST'])
 def webhook():
-    #print(request.data)
+    print(request.data)
     print('')
     data = json.loads(request.data)
     
