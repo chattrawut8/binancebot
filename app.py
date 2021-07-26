@@ -25,14 +25,8 @@ def cancel_all_order(symbol):
             client = Client(API_KEY, API_SECRET)
             continue
     
-    print('Old json orders',json_object)
-
     with open('orders.json', 'w') as outfile:
         json.dump('', outfile)
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    
-    print('New json orders',json_object)
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -82,7 +76,7 @@ def check_hit_stoploss(symbol):
     except Exception as e:
         print('dont have any order')
 
-    """if json_object[index]['side'] == 'BUY':
+    if json_object[index]['side'] == 'BUY':
         try:
             client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
         except BinanceAPIException as e:
@@ -96,7 +90,7 @@ def check_hit_stoploss(symbol):
         except BinanceAPIException as e:
             print('\n Has hit stoploss SELL order!')
             client = Client(API_KEY, API_SECRET)
-            cancel_all_order(symbol)"""
+            cancel_all_order(symbol)
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     try:
