@@ -83,8 +83,8 @@ def check_hit_SL_TP(symbol):
 
         if json_object[index]['side'] == 'BUY':
             try:
-                check_sl_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[0]['orderId'])
-                check_tp_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[index]['orderId'])
+                check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
+                check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
                 print(check_sl_order[0]['orderId'])
                 print(check_tp_order[index]['orderId'])
             except BinanceAPIException as e:
