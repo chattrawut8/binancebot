@@ -77,6 +77,12 @@ def check_hit_SL_TP(symbol):
 
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
+
+        with open('orders.json', 'r') as openfile:
+            json_object = json.load(openfile)
+        for x in json_object:
+            print(x['orderId'])
+
         if json_object[index]['side'] == 'BUY':
             try:
                 check_sl_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[0]['orderId'])
