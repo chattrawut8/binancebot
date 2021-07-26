@@ -69,7 +69,7 @@ def check_hit_stoploss(symbol):
 
     print("pass1")
     index = [x['reduceOnly'] for x in json_object].index(False)
-    print("pass2")
+    print("pass2 ",index)
     if json_object[index]['side'] == 'BUY':
         try:
             print("pass3")
