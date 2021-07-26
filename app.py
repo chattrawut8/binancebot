@@ -17,6 +17,15 @@ def cancel_all_order(symbol):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     
+    print('Old json orders',json_object)
+
+    with open('orders.json', 'w') as outfile:
+        json.dump('', outfile)
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    
+    print('New json orders',json_object)
+
     for x in json_object:
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
