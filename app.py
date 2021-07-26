@@ -16,6 +16,14 @@ def cancel_all_order(symbol):
     client = Client(API_KEY, API_SECRET)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
+
+    for x in json_object:
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
+        except BinanceAPIException as e:
+            print('\nClose old order\ncan not find ',x['orderId'])
+            client = Client(API_KEY, API_SECRET)
+            continue
     
     print('Old json orders',json_object)
 
@@ -25,14 +33,6 @@ def cancel_all_order(symbol):
         json_object = json.load(openfile)
     
     print('New json orders',json_object)
-
-    for x in json_object:
-        try:
-            client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
-        except BinanceAPIException as e:
-            print('\nClose old order\ncan not find ',x['orderId'])
-            client = Client(API_KEY, API_SECRET)
-            continue
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
