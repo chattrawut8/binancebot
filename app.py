@@ -83,20 +83,19 @@ def check_hit_SL_TP(symbol):
 
     for x in json_object:
         print(x['orderId'])
-
     
     try:
         if json_object[index]['side'] == 'BUY':
             check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
             check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
-            print('check_sl_order ',check_sl_order[0]['orderId'])
-            print('check_tp_order '.check_tp_order[index]['orderId'])
+            print('check_sl_order ',check_sl_order['orderId'])
+            print('check_tp_order '.check_tp_order['orderId'])
         else:
             len_orders = int(len(json_object)) - 1
             check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
             check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
-            print('check_sl_order ',check_sl_order[len_orders]['orderId'])
-            print('check_tp_order ', check_tp_order[index]['orderId'])
+            print('check_sl_order ',check_sl_order['orderId'])
+            print('check_tp_order ', check_tp_order['orderId'])
     except BinanceAPIException as e:
         print('\n Has hit ST/TP BUY order!')
         client = Client(API_KEY, API_SECRET)
