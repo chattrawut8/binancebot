@@ -20,7 +20,7 @@ def cancel_all_order(symbol):
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
         except print(0):
             print('can not find ',x['orderId'])
-            pass
+            continue
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
