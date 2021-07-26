@@ -75,35 +75,36 @@ def check_hit_SL_TP(symbol):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
+    index = -1
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
-
-        for x in json_object:
-            print(x['orderId'])
-
-        if json_object[index]['side'] == 'BUY':
-            try:
-                check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
-                check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
-                print('check_sl_order ',check_sl_order[0]['orderId'])
-                print('check_tp_order '.check_tp_order[index]['orderId'])
-            except BinanceAPIException as e:
-                print('\n Has hit ST/TP BUY order!')
-                client = Client(API_KEY, API_SECRET)
-                cancel_all_order(symbol)
-        else:
-            len_orders = int(len(json_object)) - 1
-            try:
-                check_sl_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[len_orders]['orderId'])
-                check_tp_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[index]['orderId'])
-                print('check_sl_order ',check_sl_order[len_orders]['orderId'])
-                print('check_tp_order ', check_tp_order[index]['orderId'])
-            except BinanceAPIException as e:
-                print('\n Has hit ST/TP SELL order!')
-                client = Client(API_KEY, API_SECRET)
-                cancel_all_order(symbol)
     except Exception as e:
         print('dont have any order')
+
+    for x in json_object:
+        print(x['orderId'])
+
+    if json_object[index]['side'] == 'BUY':
+        try:
+            check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
+            check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
+            print('check_sl_order ',check_sl_order[0]['orderId'])
+            print('check_tp_order '.check_tp_order[index]['orderId'])
+        except BinanceAPIException as e:
+            print('\n Has hit ST/TP BUY order!')
+            client = Client(API_KEY, API_SECRET)
+            cancel_all_order(symbol)
+    else:
+        len_orders = int(len(json_object)) - 1
+        try:
+            check_sl_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[len_orders]['orderId'])
+            check_tp_order = client.futures_get_open_orders(symbol=symbol, orderId=json_object[index]['orderId'])
+            print('check_sl_order ',check_sl_order[len_orders]['orderId'])
+            print('check_tp_order ', check_tp_order[index]['orderId'])
+        except BinanceAPIException as e:
+            print('\n Has hit ST/TP SELL order!')
+            client = Client(API_KEY, API_SECRET)
+            cancel_all_order(symbol)
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     try:
