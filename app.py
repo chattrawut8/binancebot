@@ -1,4 +1,4 @@
-import json, config, time
+import json, config
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
@@ -10,20 +10,6 @@ app = Flask(__name__)
 API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
 API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
-
-starttime = time.time()
-while True:
-    client = Client(API_KEY, API_SECRET)
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    index = [x['reduceOnly'] for x in json_object].index(False)
-
-    try:
-        check_hit_stoploss(symbol=json_object[index]['symbol'])
-    except BinanceAPIException as e:
-        print('Dont have any order')
-        client = Client(API_KEY, API_SECRET)
-    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
@@ -100,6 +86,7 @@ def check_hit_stoploss(symbol):
             cancel_all_order(symbol)
 
 def check_close_order(symbol=symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+    print('!!!check_hit_stoploss!!!')
     check_hit_stoploss(symbol=symbol)
 
 """def change_stoploss():
@@ -119,16 +106,6 @@ def check_close_order(symbol=symbol): #เมื่อมีการชนเ�
         if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_stoploss_to_0risk()
 """
-
-def check_every_1minute(symbol, high, low):
-    try:
-        #if check_position_status(symbol) == True:
-        #    change_stoploss()
-        check_close_order(symbol=symbol, high=high, low=low)
-    except Exception as e:
-        print("an exception occured - {}".format(e))
-        return False
-
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -270,7 +247,7 @@ def webhook():
             "message": "order failed"
         }
 
-"""@app.route('/check', methods=['POST'])
+@app.route('/check', methods=['POST'])
 def webhook():
     #print(request.data)
     print('')
@@ -281,10 +258,9 @@ def webhook():
             "code": "error",
             "message": "Nice try, invalid passphrase"
         }
-    high = data['bar']['high']
-    low = data['bar']['low']
+
     symbol = data['ticker']
-    check_response = check_every_1minute(symbol, high, low)
+    check_response = check_close_order(symbol)
 
     if check_response:
         return {
@@ -298,4 +274,3 @@ def webhook():
             "code": "error",
             "message": "order failed"
         }
-"""
