@@ -89,7 +89,7 @@ def check_hit_SL_TP(symbol):
             check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[0]['orderId'])
             check_tp_order = client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId'])
             print('check_sl_order ',check_sl_order['orderId'])
-            print('check_tp_order '.check_tp_order['orderId'])
+            print('check_tp_order ',check_tp_order['orderId'])
         else:
             len_orders = int(len(json_object)) - 1
             check_sl_order = client.futures_get_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
