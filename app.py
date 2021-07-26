@@ -184,6 +184,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 print("New opposite signal so cancel all order")
 
         if check_main_order_status(symbol) == False and check_position_status(symbol) == False:
+            cancel_all_order(symbol)
             if side == "BUY":
                 order = client.futures_create_order(symbol=symbol, side=side,
                 type="STOP_MARKET",stopPrice=high_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
