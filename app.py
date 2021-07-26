@@ -1,4 +1,4 @@
-import json, config
+import json, config, time
 from flask import Flask, request, jsonify, render_template
 from binance.client import Client
 from binance.enums import *
@@ -10,6 +10,20 @@ app = Flask(__name__)
 API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
 API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
+
+starttime = time.time()
+while True:
+    client = Client(API_KEY, API_SECRET)
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    index = [x['reduceOnly'] for x in json_object].index(False)
+
+    try:
+        check_hit_stoploss(symbol=json_object[index]['symbol'])
+    except BinanceAPIException as e:
+        print('Dont have any order')
+        client = Client(API_KEY, API_SECRET)
+    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
@@ -62,7 +76,7 @@ def save_orders_json(symbol):
 
     print('MAIN ORDER \n',client.futures_get_order(symbol=symbol, orderId=json_object[index]['orderId']))
 
-def check_hit_stoploss(symbol,high,low):
+def check_hit_stoploss(symbol):
     client = Client(API_KEY, API_SECRET)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
@@ -73,7 +87,7 @@ def check_hit_stoploss(symbol,high,low):
         try:
             client.futures_cancel_order(symbol=symbol, orderId=json_object[0]['orderId'])
         except BinanceAPIException as e:
-            print('\n Has hit stoploss order!')
+            print('\n Has hit stoploss BUY order!')
             client = Client(API_KEY, API_SECRET)
             cancel_all_order(symbol)
     else:
@@ -81,13 +95,12 @@ def check_hit_stoploss(symbol,high,low):
         try:
             client.futures_cancel_order(symbol=symbol, orderId=json_object[len_orders]['orderId'])
         except BinanceAPIException as e:
-            print('\n Has hit stoploss order!')
+            print('\n Has hit stoploss SELL order!')
             client = Client(API_KEY, API_SECRET)
             cancel_all_order(symbol)
 
-def check_close_order(symbol=symbol, high=high, low=low): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    if check_hit_stoploss(symbol=symbol, high=high, low=low) == True:# or check_count_open4h_order() >=5 or check_close_main_position_when_alltp() == True:
-        cancel_all_order(symbol = symbol)
+def check_close_order(symbol=symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
+    check_hit_stoploss(symbol=symbol)
 
 """def change_stoploss():
     with open('orders.json', 'r') as openfile:
@@ -257,7 +270,7 @@ def webhook():
             "message": "order failed"
         }
 
-@app.route('/check', methods=['POST'])
+"""@app.route('/check', methods=['POST'])
 def webhook():
     #print(request.data)
     print('')
@@ -285,3 +298,4 @@ def webhook():
             "code": "error",
             "message": "order failed"
         }
+"""
