@@ -13,6 +13,7 @@ client = Client(API_KEY, API_SECRET) #testnet=True
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
+    client = Client(API_KEY, API_SECRET)
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     
