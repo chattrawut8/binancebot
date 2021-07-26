@@ -252,7 +252,7 @@ def webhook():
         }
 
 @app.route('/check', methods=['POST'])
-def webhook():
+def check():
     print(request.data)
     print('')
     data = json.loads(request.data)
@@ -269,12 +269,12 @@ def webhook():
     if check_response:
         return {
             "code": "success",
-            "message": "order executed"
+            "message": "check executed"
         }
     else:
         print("order failed")
 
         return {
             "code": "error",
-            "message": "order failed"
+            "message": "check failed"
         }
