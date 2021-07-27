@@ -73,13 +73,12 @@ def save_orders_status_1to3_json(price1,price2):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
-    index1 = [x['stopPrice'] for x in json_object].index(price1)
-    index2 = [x['stopPrice'] for x in json_object].index(price2)
+    index = [x['reduceOnly'] for x in json_object].index(False)
 
     if type_tp == '1to3':
         dictionary ={
-            "tp1":{"price":price1,"orderId":json_object[index1]['orderId']},
-            "tp2":{"price":price2,"orderId":json_object[index2]['orderId']}}
+            "tp1":{"price":price1,"orderId":json_object[index+1]['orderId']},
+            "tp2":{"price":price2,"orderId":json_object[index+2]['orderId']}}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
@@ -96,11 +95,11 @@ def save_orders_status_other_json(price1):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     print(json_object)
-    index1 = [x['stopPrice'] for x in json_object].index(float(price1))
+    index = [x['reduceOnly'] for x in json_object].index(False)
     print('pass2')
     if type_tp == '1to3':
         dictionary ={
-            "tp1":{"price":price1,"orderId":json_object[index1]['orderId']}}
+            "tp1":{"price":price1,"orderId":json_object[index+1]['orderId']}}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
