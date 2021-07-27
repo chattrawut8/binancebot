@@ -15,8 +15,17 @@ client = Client(API_KEY, API_SECRET) #testnet=True
 
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
+
 with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
+
+try:
+    order = client.futures_create_order(symbol='ETHUSDT', side='BUY',
+        type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
+    order = client.futures_create_order(symbol='ETHUSDT', side='SELL',
+        type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
+except print(0):
+    client = Client(API_KEY, API_SECRET)
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
