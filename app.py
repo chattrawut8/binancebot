@@ -16,6 +16,10 @@ client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
 with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
+with open('orders_status.json', 'w') as outfile:
+    json.dump('', outfile)
+with open('tptype.json', 'w') as outfile:
+    json.dump('', outfile)
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
@@ -215,7 +219,7 @@ def change_stoploss(symbol):
         print('error')
 
 def save_TP_type(tp_type):
-    dictionary ={"type":"tp_type"}
+    dictionary ={"type":tp_type}
     with open("tptype.json", "w") as outfile:
         json.dump(dictionary, outfile)
 
