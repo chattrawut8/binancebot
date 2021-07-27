@@ -36,7 +36,9 @@ def cancel_all_order(symbol):
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
-    if float(orders[0]['positionAmt']) > 0: return True
+    if float(orders[0]['positionAmt']) > 0:
+        print('have position is ', orders[0]['positionAmt'])
+        return True
     else:  return False
 
 def check_main_order_type(symbol):
