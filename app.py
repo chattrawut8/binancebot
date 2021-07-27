@@ -203,7 +203,7 @@ def change_stoploss(symbol):
             change_new_stoploss(symbol,0)
         else:
             print('dont have any chang SL')
-    elif type_tp == '1to3': #risk/reward 1/1
+    elif type_tp == '1to1': #risk/reward 1/1
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_new_stoploss(symbol,0)
         else:
