@@ -83,17 +83,17 @@ def save_orders_status_1to3_json():
         json.dump(dictionary, outfile)
     
     with open('orders_status.json', 'r') as openfile:
-        json_object = json.load(openfile)
+        json_object_status = json.load(openfile)
     print('json status')
-    for x in json_object:
-        print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
+    for x in json_object_status:
+        print('order ID ' , x['orderId'] , '| price ' , x['stopPrice'])
 
 
 def save_orders_status_other_json():
 
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-        
+
     index = [x['reduceOnly'] for x in json_object].index(False)
 
     dictionary ={"tp1":{"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}}
@@ -102,11 +102,11 @@ def save_orders_status_other_json():
         json.dump(dictionary, outfile)
 
     with open('orders_status.json', 'r') as openfile:
-        json_object = json.load(openfile)
-
+        json_object_status = json.load(openfile)
+        
     print('json status')
-    for x in json_object:
-        print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
+    for x in json_object_status:
+        print('order ID ' , x['orderId'] , '| price ' , x['stopPrice'])
 
 def check_hit_SL_TP(symbol):
     client = Client(API_KEY, API_SECRET)
