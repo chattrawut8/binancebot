@@ -105,9 +105,8 @@ def save_orders_status_other_json():
         json_object_status = json.load(openfile)
         
     print('json status')
-    for x in json_object_status:
-        print('order ID ' , x['orderId'] , '| price ' , x['stopPrice'])
-
+    print(json_object_status)
+        
 def check_hit_SL_TP(symbol):
     client = Client(API_KEY, API_SECRET)
     
