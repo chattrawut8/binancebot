@@ -90,7 +90,6 @@ def save_orders_status_1to3_json():
     print('\njson status')
     print(json_object_status)
 
-
 def save_orders_status_other_json():
 
     with open('orders.json', 'r') as openfile:
@@ -188,23 +187,46 @@ def change_new_stoploss(symbol,index):
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
-    try:
-        client.futures_cancel_order(symbol=symbol, orderId=json_object_status[0]['orderId'])
-    except Exception as e:
-        print("an exception occured - {}".format(e))
-        return False
-    try:
-        index = [x['reduceOnly'] for x in json_object].index(False)
-        if json_object[index]['side'] == 'BUY':
-            order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
-            type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
-        elif json_object[index]['side'] == 'SELL':
-            order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
-            type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
-        print('new stoploss price = ', json_object_status[index]['price'],)
-    except Exception as e:
-        print("an exception occured - {}".format(e))
-        return False
+    with open('tptype.json', 'r') as openfile:
+        json_object_type_tp = json.load(openfile)
+    type_tp = json_object_type_tp['type']
+
+    if type_tp == '1to3':
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=json_object_status[0]['orderId'])
+        except Exception as e:
+            print("an exception occured - {}".format(e))
+            return False
+        try:
+            main_index = [x['reduceOnly'] for x in json_object].index(False)
+            if json_object[main_index]['side'] == 'BUY':
+                order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
+                type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
+            elif json_object[main_index]['side'] == 'SELL':
+                order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
+                type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
+            print('new stoploss price = ', json_object_status[index]['price'],)
+        except Exception as e:
+            print("an exception occured - {}".format(e))
+            return False
+    else:
+        try:
+            client.futures_cancel_order(symbol=symbol, orderId=json_object_status['orderId'])
+        except Exception as e:
+            print("an exception occured - {}".format(e))
+            return False
+        try:
+            main_index = [x['reduceOnly'] for x in json_object].index(False)
+            if json_object[main_index]['side'] == 'BUY':
+                order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="SELL", closePosition="true",
+                type="STOP_MARKET",stopPrice=json_object_status['price'], timeInForce=TIME_IN_FORCE_GTC,)
+            elif json_object[main_index]['side'] == 'SELL':
+                order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
+                type="STOP_MARKET",stopPrice=json_object_status['price'], timeInForce=TIME_IN_FORCE_GTC,)
+            print('new stoploss price = ', json_object_status['price'],)
+        except Exception as e:
+            print("an exception occured - {}".format(e))
+            return False
 
 def change_stoploss(symbol):
     with open('tptype.json', 'r') as openfile:
