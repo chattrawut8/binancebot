@@ -158,6 +158,8 @@ def check_hit_TP(symbol,index):
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
+    print(len(json_object))
+
     if len(json_object) == 1:
         try:
             print('check stoploss order id ', json_object['orderId'])
