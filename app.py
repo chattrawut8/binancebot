@@ -58,9 +58,6 @@ def check_main_order_status(symbol):
 
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
-    for x in orders:   
-        print(x['orderId'])
-        print(type(x['orderId']))
     orders.sort(key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
@@ -70,9 +67,6 @@ def save_orders_json(symbol):
     print('\n' , 'total order ' , len(json_object))
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
-
-    index = [x['reduceOnly'] for x in json_object].index(False)
-    print('Main Order Index = ' , index) 
 
 def check_hit_SL_TP(symbol):
     client = Client(API_KEY, API_SECRET)
@@ -135,7 +129,7 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         pre_balance = client.futures_account_balance()
-        precision = 2
+        precision = 3
 
         balance = int(float(pre_balance[1]['balance']))
 
