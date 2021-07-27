@@ -148,7 +148,6 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
     return check_hit_SL_TP(symbol=symbol)
 
 def check_hit_TP(symbol,index):
-    client = Client(API_KEY, API_SECRET)
 
     with open('orders_status.json', 'r') as openfile:
         json_object = json.load(openfile)
@@ -156,7 +155,9 @@ def check_hit_TP(symbol,index):
     orders = client.futures_get_open_orders(symbol=symbol)
 
     try:
+        print('check stoploss order id ', json_object[index]['orderId'])
         check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+        print('is ',check_sl_order,'\n')
     except Exception as e:
         return True
     
