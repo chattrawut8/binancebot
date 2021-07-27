@@ -19,14 +19,6 @@ client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
 
-try:
-    order = client.futures_create_order(symbol='ETHUSDT', side='BUY',
-        type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
-    order = client.futures_create_order(symbol='ETHUSDT', side='SELL',
-        type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
-except Exception as e:
-    client = Client(API_KEY, API_SECRET)
-
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
     client = Client(API_KEY, API_SECRET)
@@ -99,30 +91,28 @@ def check_hit_SL_TP(symbol):
             print('but have position')
         else:
             cancel_all_order(symbol)
+            return True
 
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
-            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
         else:
             len_orders = int(len(json_object)) - 1
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
-            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
     except Exception as e:
         print('\n Has hit ST order!')
         client = Client(API_KEY, API_SECRET)
         cancel_all_order(symbol)
+        return True
+
+    return False
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    try:
-        print('!!!check_hit_SL/TP!!!')
-        check_hit_SL_TP(symbol=symbol)
-    except Exception as e:
-        print("an exception occured - {}".format(e))
-        return False
+    print('!!!check_hit_SL/TP!!!')
+    return check_hit_SL_TP(symbol=symbol)
 
 """def change_stoploss():
     with open('orders.json', 'r') as openfile:
@@ -139,8 +129,8 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
             change_stoploss_to_0risk()
     elif len_order == 3: #risk/reward 1/1
         if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
-            change_stoploss_to_0risk()
-"""
+            change_stoploss_to_0risk()"""
+
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
@@ -193,8 +183,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', high_price)
-
-        #print(f"sending order {order_type} - {side} {quantity} {symbol}")
         
         if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
             mainOrder_side = check_main_order_type(symbol)
@@ -296,17 +284,8 @@ def check():
         }
 
     symbol = data['ticker']
-    check_response = check_close_order(symbol)
+    check_close_order(symbol)
 
-    if check_response:
-        return {
-            "code": "success",
-            "message": "check executed"
-        }
-    else:
-        print("order failed")
-
-        return {
-            "code": "error",
-            "message": "check failed"
-        }
+    if check_close_order(symbol) == False:
+        print('chack change stoloss')
+        #change_stoploss(symbol)
