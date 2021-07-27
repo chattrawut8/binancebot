@@ -77,22 +77,8 @@ def check_hit_SL_TP(symbol):
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
-    index = -1
     try:
         index = [x['reduceOnly'] for x in orders].index(False)
-        try:
-            if json_object[index]['side'] == 'BUY':
-                check_sl_order = [x['orderId'] for x in orders].index(json_object[0]['orderId'])
-                #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
-            else:
-                len_orders = int(len(json_object)) - 1
-                check_sl_order = [x['orderId'] for x in orders].index(json_object[len_orders]['orderId'])
-                #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
-        except Exception as e:
-            print('\n Has hit ST order!')
-            client = Client(API_KEY, API_SECRET)
-            cancel_all_order(symbol)
-            
     except Exception as e:
         print('\n can not find main orders')
         client = Client(API_KEY, API_SECRET)
@@ -101,6 +87,21 @@ def check_hit_SL_TP(symbol):
         else:
             cancel_all_order(symbol)
 
+    try:
+        index = [x['reduceOnly'] for x in json_object].index(False)
+        if json_object[index]['side'] == 'BUY':
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[0]['orderId'])
+            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+
+        else:
+            len_orders = int(len(json_object)) - 1
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[len_orders]['orderId'])
+            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+
+    except Exception as e:
+        print('\n Has hit ST order!')
+        client = Client(API_KEY, API_SECRET)
+        cancel_all_order(symbol)
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     try:
