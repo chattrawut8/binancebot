@@ -68,17 +68,16 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
-def save_orders_status_1to3_json(price1,price2):
+def save_orders_status_1to3_json():
 
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
     index = [x['reduceOnly'] for x in json_object].index(False)
 
-    if type_tp == '1to3':
-        dictionary ={
-            "tp1":{"price":price1,"orderId":json_object[index+1]['orderId']},
-            "tp2":{"price":price2,"orderId":json_object[index+2]['orderId']}}
+    dictionary ={
+        "tp1":{"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
+        "tp2":{"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
@@ -90,23 +89,21 @@ def save_orders_status_1to3_json(price1,price2):
         print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
 
 
-def save_orders_status_other_json(price1):
-    print('pass1')
+def save_orders_status_other_json():
+
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-    print(json_object)
+        
     index = [x['reduceOnly'] for x in json_object].index(False)
-    print('pass2')
-    if type_tp == '1to3':
-        dictionary ={
-            "tp1":{"price":price1,"orderId":json_object[index+1]['orderId']}}
+
+    dictionary ={"tp1":{"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
-    print('pass3')
+
     with open('orders_status.json', 'r') as openfile:
         json_object = json.load(openfile)
-    print('pass4')
+
     print('json status')
     for x in json_object:
         print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
@@ -315,9 +312,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 save_orders_json(symbol)
 
                 if type_tp == '1to3':
-                    save_orders_status_1to3_json(tp1,tp2)
+                    save_orders_status_1to3_json()
                 else:
-                    save_orders_status_other_json(tp1)
+                    save_orders_status_other_json()
 
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side,
@@ -339,9 +336,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 save_orders_json(symbol)
 
                 if type_tp == '1to3':
-                    save_orders_status_1to3_json(tp1,tp2)
+                    save_orders_status_1to3_json()
                 else:
-                    save_orders_status_other_json(tp1)
+                    save_orders_status_other_json()
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
