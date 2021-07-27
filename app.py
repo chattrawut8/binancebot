@@ -186,8 +186,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             print('Take Profit 2 = ',final_tp)
 
         if type_tp == '1to1':
-            print(high_price,'*',stoploss_percent,'/',2,'/',100,high_price)
-            
             if side == "BUY": tp1 = (high_price*(stoploss_percent/2)/100)+high_price
             else: tp1 = low_price - (low_price*(stoploss_percent/2)/100)
             tp1 = float(round(tp1, precision))
