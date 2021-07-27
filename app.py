@@ -19,6 +19,9 @@ client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
 
+details = client.get_asset_details()
+print(details)
+
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
     client = Client(API_KEY, API_SECRET)
