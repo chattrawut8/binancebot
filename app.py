@@ -11,7 +11,6 @@ API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
 API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
 
-type_tp = ''
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
@@ -191,7 +190,10 @@ def change_new_stoploss(symbol,index):
         return False
 
 def change_stoploss(symbol):
-    global type_tp
+    with open('tptype.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    type_tp = json_object['type']
+
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
@@ -212,9 +214,12 @@ def change_stoploss(symbol):
     else:
         print('error')
 
+def save_TP_type(tp_type):
+    dictionary ={"type":"tp_type"}
+    with open("tptype.json", "w") as outfile:
+        json.dump(dictionary, outfile)
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
-    global type_tp
     try:
         pre_balance = client.futures_account_balance()
         precision = 3
@@ -237,7 +242,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
-
+        
         if stoploss_percent >= 15:
             type_tp = '1to1'
         elif stoploss_percent >= 6:
@@ -245,6 +250,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             type_tp = '1to3'
         print('type take profit = ',type_tp)
+
+        save_TP_type(type_tp)
 
         if type_tp == '1to3':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
