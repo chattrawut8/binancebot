@@ -158,8 +158,8 @@ def check_hit_TP(symbol,index):
     orders = client.futures_get_open_orders(symbol=symbol)
 
     with open('tptype.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    type_tp = json_object['type']
+        json_object_type_tp = json.load(openfile)
+    type_tp = json_object_type_tp['type']
     print(type_tp)
 
     if type_tp == '1to3':
