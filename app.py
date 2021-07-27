@@ -144,7 +144,7 @@ def check_hit_SL_TP(symbol):
     return False
 
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
-    print('!!!check_hit_SL/TP!!!')
+    print('!!!check hit SL or all TP!!!')
     return check_hit_SL_TP(symbol=symbol)
 
 def check_hit_TP(symbol,index):
@@ -185,6 +185,7 @@ def change_new_stoploss(symbol,index):
         elif json_object[index]['side'] == 'SELL':
             order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
             type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
+        print('new stoploss price = ', json_object_status[index]['price'],)
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
@@ -195,12 +196,18 @@ def change_stoploss(symbol):
             change_new_stoploss(symbol,1)
         elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
+        else:
+            print('dont have any chang SL')
     elif type_tp == '1to2': #risk/reward 1/2
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
             change_new_stoploss(symbol,0)
+        else:
+            print('dont have any chang SL')
     elif type_tp == '1to3': #risk/reward 1/1
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_new_stoploss(symbol,0)
+        else:
+            print('dont have any chang SL')
 
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
