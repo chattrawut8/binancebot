@@ -193,7 +193,8 @@ def change_new_stoploss(symbol,index):
 
     if type_tp == '1to3':
         try:
-            client.futures_cancel_order(symbol=symbol, orderId=json_object_status[0]['orderId'])
+            client.futures_cancel_order(symbol=symbol, orderId=json_object_status[index]['orderId'])
+            print('Closed old order ',json_object_status[index]['orderId'])
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
@@ -212,6 +213,7 @@ def change_new_stoploss(symbol,index):
     else:
         try:
             client.futures_cancel_order(symbol=symbol, orderId=json_object_status['orderId'])
+            print('Closed old order ',json_object_status['orderId'])
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
