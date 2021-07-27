@@ -192,6 +192,7 @@ def change_new_stoploss(symbol,index):
         return False
 
 def change_stoploss(symbol):
+    print('pass1')
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
@@ -209,6 +210,8 @@ def change_stoploss(symbol):
             change_new_stoploss(symbol,0)
         else:
             print('dont have any chang SL')
+    else:
+        print('error')
 
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
