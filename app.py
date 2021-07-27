@@ -154,16 +154,24 @@ def check_hit_TP(symbol,index):
     with open('orders_status.json', 'r') as openfile:
         json_object = json.load(openfile)
     print(json_object)
-    print(json_object[index]['orderId'])
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
-    try:
-        print('check stoploss order id ', json_object[index]['orderId'])
-        check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
-        print('is ',check_sl_order,'\n')
-    except Exception as e:
-        return True
+    if len(json_object) == 1:
+        try:
+            print('check stoploss order id ', json_object['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object['orderId'])
+            print('is ',check_sl_order,'\n')
+        except Exception as e:
+            return True
+    else:
+        try:
+            print('check stoploss order id ', json_object[index]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            print('is ',check_sl_order,'\n')
+        except Exception as e:
+            return True
+    
     
     return False
 
