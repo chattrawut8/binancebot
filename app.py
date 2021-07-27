@@ -60,7 +60,9 @@ def save_orders_json(symbol):
     for x in orders:   
         print(x['orderId'])
         print(type(x['orderId']))
-    orders = sorted(orders, key=lambda x: x['stopPrice'])
+    #orders = sorted(orders, key=lambda x: x['stopPrice'])
+
+    orders.sort(key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
