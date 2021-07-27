@@ -96,7 +96,7 @@ def save_orders_status_other_json(price1):
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     print(json_object)
-    index1 = [x['stopPrice'] for x in json_object].index(price1)
+    index1 = [x['stopPrice'] for x in json_object].index(float(price1))
     print('pass2')
     if type_tp == '1to3':
         dictionary ={
