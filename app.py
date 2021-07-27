@@ -84,9 +84,9 @@ def save_orders_status_1to3_json():
     
     with open('orders_status.json', 'r') as openfile:
         json_object_status = json.load(openfile)
-    print('json status')
-    for x in json_object_status:
-        print('order ID ' , x['orderId'] , '| price ' , x['stopPrice'])
+        
+    print('\njson status')
+    print(json_object_status)
 
 
 def save_orders_status_other_json():
@@ -104,7 +104,7 @@ def save_orders_status_other_json():
     with open('orders_status.json', 'r') as openfile:
         json_object_status = json.load(openfile)
         
-    print('json status')
+    print('\njson status')
     print(json_object_status)
         
 def check_hit_SL_TP(symbol):
