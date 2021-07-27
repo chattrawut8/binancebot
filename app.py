@@ -4,6 +4,7 @@ from binance.client import Client
 from binance.enums import *
 from math import ceil, floor
 from binance.exceptions import BinanceAPIException
+from natsort import natsorted
 
 app = Flask(__name__)
 
@@ -62,7 +63,8 @@ def save_orders_json(symbol):
         print(type(x['orderId']))
     #orders = sorted(orders, key=lambda x: x['stopPrice'])
 
-    orders.sort(key=lambda x: x['stopPrice'])
+    #orders.sort(key=lambda x: x['stopPrice'])
+    orders = natsorted(orders, key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
