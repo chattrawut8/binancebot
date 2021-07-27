@@ -284,8 +284,11 @@ def check():
         }
 
     symbol = data['ticker']
-    check_close_order(symbol)
-
+    #check_close_order(symbol)
     if check_close_order(symbol) == False:
         print('chack change stoloss')
         #change_stoploss(symbol)
+    return {
+            "code": "success",
+            "message": "check executed"
+        }
