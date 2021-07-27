@@ -78,8 +78,8 @@ def save_orders_status_1to3_json():
     index = [x['reduceOnly'] for x in json_object].index(False)
 
     dictionary ={
-        "tp1":{"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
-        "tp2":{"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}}
+        "price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId'],
+        "price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
@@ -98,7 +98,7 @@ def save_orders_status_other_json():
 
     index = [x['reduceOnly'] for x in json_object].index(False)
 
-    dictionary ={"tp1":{"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}}
+    dictionary ={"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
@@ -202,7 +202,7 @@ def change_stoploss(symbol):
 
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
-            change_new_stoploss(symbol,1)
+            change_new_stoploss(symbol,'1')
         elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
         else:
