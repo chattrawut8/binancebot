@@ -36,7 +36,6 @@ def cancel_all_order(symbol):
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
-    print('have position is ', orders[0]['positionAmt'])
     if float(orders[0]['positionAmt']) > 0:
         return True
     else:  return False
@@ -58,6 +57,8 @@ def check_main_order_status(symbol):
 
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
+    for x in orders:   
+        print(orders['orderId'])
     orders = sorted(orders, key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
@@ -82,10 +83,10 @@ def check_hit_SL_TP(symbol):
     try:
         index = [x['reduceOnly'] for x in orders].index(False)
     except Exception as e:
-        print('\n can not find main orders')
+        print('can not find main orders')
         client = Client(API_KEY, API_SECRET)
         if check_position_status(symbol=symbol) == True:
-            print('\n but have position')
+            print('but have position')
         else:
             cancel_all_order(symbol)
 
