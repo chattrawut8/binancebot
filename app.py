@@ -4,7 +4,6 @@ from binance.client import Client
 from binance.enums import *
 from math import ceil, floor
 from binance.exceptions import BinanceAPIException
-from natsort import natsorted
 
 app = Flask(__name__)
 
@@ -61,10 +60,7 @@ def save_orders_json(symbol):
     for x in orders:   
         print(x['orderId'])
         print(type(x['orderId']))
-    #orders = sorted(orders, key=lambda x: x['stopPrice'])
-
-    #orders.sort(key=lambda x: x['stopPrice'])
-    orders = natsorted(orders, key=lambda x: x['stopPrice'])
+    orders.sort(key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
@@ -98,12 +94,12 @@ def check_hit_SL_TP(symbol):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[0]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
             #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
         else:
             len_orders = int(len(json_object)) - 1
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[len_orders]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
             #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
     except Exception as e:
