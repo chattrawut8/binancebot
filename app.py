@@ -24,7 +24,7 @@ try:
         type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
     order = client.futures_create_order(symbol='ETHUSDT', side='SELL',
         type="MARKET", closePosition="true", timeInForce=TIME_IN_FORCE_GTC,)
-except print(0):
+except Exception as e:
     client = Client(API_KEY, API_SECRET)
 
 def cancel_all_order(symbol):
