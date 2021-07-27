@@ -212,6 +212,7 @@ def change_stoploss(symbol):
             print('dont have any change SL')
     elif type_tp == '1to1': #risk/reward 1/1
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
+            print('check_hit_TP pass')
             change_new_stoploss(symbol,0)
         else:
             print('dont have any change SL')
@@ -254,8 +255,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             type_tp = '1to3'
         print('type take profit = ',type_tp)
-
-        save_TP_type(type_tp)
 
         if type_tp == '1to3':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
@@ -336,6 +335,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
+                
+                save_TP_type(type_tp)
 
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side,
@@ -360,6 +361,8 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
+
+                save_TP_type(type_tp)
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
