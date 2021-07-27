@@ -160,20 +160,19 @@ def check_hit_TP(symbol,index):
     with open('tptype.json', 'r') as openfile:
         json_object_type_tp = json.load(openfile)
     type_tp = json_object_type_tp['type']
-    print(type_tp)
 
     if type_tp == '1to3':
         try:
             print('check stoploss order id ', json_object[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
-            print('is ',check_sl_order,'\n')
+            print('index is ',check_sl_order)
         except Exception as e:
             return True
     else:
         try:
             print('check stoploss order id ', json_object['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object['orderId'])
-            print('is ',check_sl_order,'\n')
+            print('index is ',check_sl_order)
         except Exception as e:
             return True
     
