@@ -129,7 +129,7 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
     try:
         pre_balance = client.futures_account_balance()
-        precision = 3
+        precision = 4
 
         balance = int(float(pre_balance[1]['balance']))
 
