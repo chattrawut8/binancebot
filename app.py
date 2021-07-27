@@ -58,7 +58,7 @@ def check_main_order_status(symbol):
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
     for x in orders:   
-        print(orders['orderId'])
+        print(x['orderId'])
     orders = sorted(orders, key=lambda x: x['stopPrice'])
 
     with open('orders.json', 'w') as outfile:
