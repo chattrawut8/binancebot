@@ -11,7 +11,7 @@ API_KEY = 'E2TnptYKp2MigaCSWuMPuHBtJqIwwJnMqghYouRAUNh08zVZLGwoucb4N0kuDFK2'
 API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
 
-#test
+type_tp = ''
 
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
@@ -68,6 +68,49 @@ def save_orders_json(symbol):
     for x in json_object:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
+def save_orders_status_1to3_json(price1,price2):
+
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+
+    index1 = [x['stopPrice'] for x in json_object].index(price1)
+    index2 = [x['stopPrice'] for x in json_object].index(price2)
+
+    if type_tp == '1to3':
+        dictionary ={
+            "tp1":{"price":price1,"orderId":json_object[index1]['orderId']},
+            "tp2":{"price":price2,"orderId":json_object[index2]['orderId']}}
+
+    with open("orders_status.json", "w") as outfile:
+        json.dump(dictionary, outfile)
+    
+    with open('orders_status.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    print('json status')
+    for x in json_object:
+        print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
+
+
+def save_orders_status_other_json(price1):
+  
+    with open('orders.json', 'r') as openfile:
+        json_object = json.load(openfile)
+
+    index1 = [x['stopPrice'] for x in json_object].index(price1)
+
+    if type_tp == '1to3':
+        dictionary ={
+            "tp1":{"price":price1,"orderId":json_object[index1]['orderId']}}
+
+    with open("orders_status.json", "w") as outfile:
+        json.dump(dictionary, outfile)
+
+    with open('orders_status.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    print('json status')
+    for x in json_object:
+        print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
+
 def check_hit_SL_TP(symbol):
     client = Client(API_KEY, API_SECRET)
     
@@ -108,22 +151,60 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
     print('!!!check_hit_SL/TP!!!')
     return check_hit_SL_TP(symbol=symbol)
 
-"""def change_stoploss():
+def check_hit_TP(symbol,index):
+    client = Client(API_KEY, API_SECRET)
+
+    with open('orders_status.json', 'r') as openfile:
+        json_object = json.load(openfile)
+
+    orders = client.futures_get_open_orders(symbol=symbol)
+
+    try:
+        check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+    except Exception as e:
+        return True
+    
+    return False
+
+def change_new_stoploss(symbol,index):
+    print('Have change new stoploss!!')
+    with open('orders_status.json', 'r') as openfile:
+        json_object_status = json.load(openfile)
+
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-    len_order = len(json_object)
 
-    if len_order == 5: #risk/reward 1/3
-        if check_hit_tp2() == True: 
-            change_stoploss_to_1reward()
-        elif check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 1/3
-            change_stoploss_to_0risk()
-    elif len_order == 4: #risk/reward 1/2
-        if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 1/2
-            change_stoploss_to_0risk()
-    elif len_order == 3: #risk/reward 1/1
-        if check_hit_tp1() == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
-            change_stoploss_to_0risk()"""
+    orders = client.futures_get_open_orders(symbol=symbol)
+
+    try:
+        client.futures_cancel_order(symbol=symbol, orderId=json_object_status[0]['orderId'])
+    except Exception as e:
+        print("an exception occured - {}".format(e))
+        return False
+    try:
+        index = [x['reduceOnly'] for x in json_object].index(False)
+        if json_object[index]['side'] == 'BUY':
+            order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
+            type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
+        elif json_object[index]['side'] == 'SELL':
+            order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
+            type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
+    except Exception as e:
+        print("an exception occured - {}".format(e))
+        return False
+
+def change_stoploss(symbol):
+    if type_tp == '1to3': #risk/reward 1/3
+        if check_hit_TP(symbol,1) == True: 
+            change_new_stoploss(symbol,1)
+        elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
+            change_new_stoploss(symbol,0)
+    elif type_tp == '1to2': #risk/reward 1/2
+        if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
+            change_new_stoploss(symbol,0)
+    elif type_tp == '1to3': #risk/reward 1/1
+        if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
+            change_new_stoploss(symbol,0)
 
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
@@ -233,6 +314,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
                 save_orders_json(symbol)
 
+                if type_tp == '1to3':
+                    save_orders_status_1to3_json(tp1,tp2)
+                else:
+                    save_orders_status_other_json(tp1)
+
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side,
                 type="STOP_MARKET",stopPrice=low_price, quantity=quantity, timeInForce=TIME_IN_FORCE_GTC,)
@@ -251,6 +337,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
 
                 save_orders_json(symbol)
+
+                if type_tp == '1to3':
+                    save_orders_status_1to3_json(tp1,tp2)
+                else:
+                    save_orders_status_other_json(tp1)
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
@@ -311,7 +402,7 @@ def check():
     #check_close_order(symbol)
     if check_close_order(symbol) == False:
         print('chack change stoloss')
-        #change_stoploss(symbol)
+        change_stoploss(symbol)
     return {
             "code": "success",
             "message": "check executed"
