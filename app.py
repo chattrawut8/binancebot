@@ -152,27 +152,55 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         stoploss_percent = float(round(stoploss_percent, precision))
 
         print("stoploss % is ", stoploss_percent)
-
-        if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
-        else: tp1 = low_price - (low_price*stoploss_percent/100)
-        tp1 = float(round(tp1, precision))
-        print('Take Profit 1 = ',tp1)
-
-        if side == "BUY": tp2 = (high_price*(stoploss_percent*2)/100)+high_price
-        else: tp2 = low_price - (low_price*(stoploss_percent*2)/100)
-        tp2 = float(round(tp2, precision))
-        print('Take Profit 2 = ',tp2)
-
-        if side == "BUY": tp3 = (high_price*(stoploss_percent*3)/100)+high_price
-        else: tp3 = low_price - (low_price*(stoploss_percent*3)/100)
-        tp3 = float(round(tp3, precision))
-        print('Take Profit 3 = ',tp3)
-
+        
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
 
-        quantity_tp2 = quantity/2
-        quantity_tp2 = float(round(quantity_tp2, precision))
+        if stoploss_percent >= 15:
+            type_tp = '1to1'
+        elif stoploss_percent >= 6:
+            type_tp = '1to2'
+        else:
+            type_tp = '1to3'
+        print('type take profit = ',type_tp)
+
+        if type_tp == '1to3':
+            if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
+            else: tp1 = low_price - (low_price*stoploss_percent/100)
+            tp1 = float(round(tp1, precision))
+            print('Take Profit 1 = ',tp1)
+
+            if side == "BUY": tp2 = (high_price*(stoploss_percent*2)/100)+high_price
+            else: tp2 = low_price - (low_price*(stoploss_percent*2)/100)
+            tp2 = float(round(tp2, precision))
+            print('Take Profit 2 = ',tp2)
+
+            if side == "BUY": final_tp = (high_price*(stoploss_percent*3)/100)+high_price
+            else: final_tp = low_price - (low_price*(stoploss_percent*3)/100)
+            final_tp = float(round(final_tp, precision))
+            print('Take Profit 3 = ',final_tp)
+
+        if type_tp == '1to2':
+            if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
+            else: tp1 = low_price - (low_price*stoploss_percent/100)
+            tp1 = float(round(tp1, precision))
+            print('Take Profit 1 = ',tp1)
+
+            if side == "BUY": final_tp = (high_price*(stoploss_percent*2)/100)+high_price
+            else: final_tp = low_price - (low_price*(stoploss_percent*2)/100)
+            final_tp = float(round(final_tp, precision))
+            print('Take Profit 2 = ',final_tp)
+
+        if type_tp == '1to1':
+            if side == "BUY": tp1 = (high_price*(stoploss_percent/2)/100)+high_price
+            else: tp1 = low_price - (low_price*(stoploss_percent/2)/100)
+            tp1 = float(round(tp1, precision))
+            print('Take Profit 1 = ',tp1)
+
+            if side == "BUY": final_tp = (high_price*stoploss_percent/100)+high_price
+            else: final_tp = low_price - (low_price*stoploss_percent/100)
+            final_tp = float(round(final_tp, precision))
+            print('Take Profit 2 = ',final_tp)
 
         position_status = check_position_status(symbol)
         if position_status == True:
@@ -199,11 +227,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-                order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                if type_tp == '1to3':
+                    order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
+                    type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp3, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=final_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
@@ -217,11 +246,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-                order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
+                if type_tp == '1to3':
+                    order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
+                    type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
-                type="TAKE_PROFIT_MARKET",stopPrice=tp3, quantity=quantity_tp2, timeInForce=TIME_IN_FORCE_GTC,)
+                type="TAKE_PROFIT_MARKET",stopPrice=final_tp, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
