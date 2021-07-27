@@ -76,20 +76,31 @@ def check_hit_SL_TP(symbol):
         json_object = json.load(openfile)
 
     orders = client.futures_get_open_orders(symbol=symbol)
+
     index = -1
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
+    except Exception as e:
+        print('\n can not find main orders')
+        client = Client(API_KEY, API_SECRET)
+        if check_position_status(symbol=symbol) == True:
+            print('\n but have position')
+        else:
+            cancel_all_order(symbol)
+
+    try:
+        
         if json_object[index]['side'] == 'BUY':
             check_sl_order = [x['orderId'] for x in orders].index(json_object[0]['orderId'])
-            check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
         else:
             len_orders = int(len(json_object)) - 1
             check_sl_order = [x['orderId'] for x in orders].index(json_object[len_orders]['orderId'])
-            check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            #check_tp_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
 
     except Exception as e:
-        print('\n Has hit ST/TP BUY order!')
+        print('\n Has hit ST order!')
         client = Client(API_KEY, API_SECRET)
         cancel_all_order(symbol)
 
