@@ -12,7 +12,6 @@ API_SECRET = 'JmNksYt81bikkoMY6R4sqVlSSjsK0AxIrS8dw0IxCmPzWE2BwZ9l3tm3vUA2Gry8'
 client = Client(API_KEY, API_SECRET) #testnet=True
 
 type_tp = ''
-
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
@@ -192,7 +191,6 @@ def change_new_stoploss(symbol,index):
         return False
 
 def change_stoploss(symbol):
-    print('pass1')
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
@@ -214,7 +212,8 @@ def change_stoploss(symbol):
         print('error')
 
 
-def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):  
+def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
+    global type_tp
     try:
         pre_balance = client.futures_account_balance()
         precision = 3
