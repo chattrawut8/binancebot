@@ -191,23 +191,24 @@ def change_new_stoploss(symbol,index):
         return False
 
 def change_stoploss(symbol):
+    global type_tp
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
         elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
         else:
-            print('dont have any chang SL')
+            print('dont have any change SL')
     elif type_tp == '1to2': #risk/reward 1/2
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
             change_new_stoploss(symbol,0)
         else:
-            print('dont have any chang SL')
+            print('dont have any change SL')
     elif type_tp == '1to1': #risk/reward 1/1
         if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             change_new_stoploss(symbol,0)
         else:
-            print('dont have any chang SL')
+            print('dont have any change SL')
     else:
         print('error')
 
