@@ -81,7 +81,15 @@ def check_hit_SL_TP(symbol):
     except Exception as e:
         print('dont have any order')
 
+    print('json')
     for x in json_object:
+        print(x['orderId'])
+
+    print('\n')
+
+    print('order')
+    orders = client.futures_get_open_orders(symbol=symbol)
+    for x in orders:
         print(x['orderId'])
     
     try:
