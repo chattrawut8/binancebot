@@ -92,21 +92,22 @@ def save_orders_status_1to3_json(price1,price2):
 
 
 def save_orders_status_other_json(price1):
-  
+    print('pass1')
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
 
     index1 = [x['stopPrice'] for x in json_object].index(price1)
-
+    print('pass2')
     if type_tp == '1to3':
         dictionary ={
             "tp1":{"price":price1,"orderId":json_object[index1]['orderId']}}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
-
+    print('pass3')
     with open('orders_status.json', 'r') as openfile:
         json_object = json.load(openfile)
+    print('pass4')
     print('json status')
     for x in json_object:
         print('order ID ' , x['orderId'] , ' price ' , x['stopPrice'])
