@@ -158,19 +158,21 @@ def check_hit_TP(symbol,index):
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
-    print(len(json_object))
+    with open('tptype.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    type_tp = json_object['type']
 
-    if len(json_object) == 1:
+    if type_tp == '1to3':
         try:
-            print('check stoploss order id ', json_object['orderId'])
-            check_sl_order = [x['orderId'] for x in orders].index(json_object['orderId'])
+            print('check stoploss order id ', json_object[index]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
             print('is ',check_sl_order,'\n')
         except Exception as e:
             return True
     else:
         try:
-            print('check stoploss order id ', json_object[index]['orderId'])
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            print('check stoploss order id ', json_object['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object['orderId'])
             print('is ',check_sl_order,'\n')
         except Exception as e:
             return True
@@ -212,7 +214,7 @@ def change_stoploss(symbol):
 
     if type_tp == '1to3': #risk/reward 1/3
         if check_hit_TP(symbol,1) == True: 
-            change_new_stoploss(symbol,'1')
+            change_new_stoploss(symbol,1)
         elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
         else:
