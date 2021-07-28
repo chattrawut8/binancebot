@@ -245,7 +245,7 @@ def change_new_stoploss(symbol,index):
                 type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 neworder = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
-                type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
+                type="STOP_MARKET",stopPrice=2450, timeInForce=TIME_IN_FORCE_GTC,)
             print('new stoploss price = ', json_object_status['price'],)
         except Exception as e:
             print("an exception occured - {}".format(e))
@@ -297,6 +297,8 @@ def change_stoploss(symbol):
     with open('current_tp.json', 'r') as openfile:
         json_object_current_tp = json.load(openfile)
     current_tp = json_object_current_tp['current_tp']
+
+    print(current_tp)
 
     if type_tp == '1to3': #risk/reward 1/3
         if current_tp == 1 and check_hit_TP(symbol,1) == True: 
