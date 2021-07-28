@@ -193,14 +193,10 @@ def change_new_stoploss(symbol,index):
 
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
-        print('pass0')
         if json_object[index]['side'] == 'BUY':
             sl_index = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
-            print('pass1')
         else:
             sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
-            print('pass1')
-        print('pass2')
         client.futures_cancel_order(symbol=symbol, orderId=json_object[sl_index]['orderId'])
         print('Closed old order ',json_object[sl_index]['orderId'])
     except Exception as e:
@@ -209,7 +205,7 @@ def change_new_stoploss(symbol,index):
 
     if type_tp == '1to3':
         try:
-            print('replace new SL order')
+            print('Replace new SL order')
             """main_index = [x['reduceOnly'] for x in json_object].index(False)
             if json_object[main_index]['side'] == 'BUY':
                 order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
@@ -223,15 +219,16 @@ def change_new_stoploss(symbol,index):
             return False
     else:
         try:
-            print('replace new SL order')
-            """main_index = [x['reduceOnly'] for x in json_object].index(False)
+            print('Replace new SL order')
+            main_index = [x['reduceOnly'] for x in json_object].index(False)
+            print('pass')
             if json_object[main_index]['side'] == 'BUY':
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=json_object_status['price'], timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=json_object_status['price'], timeInForce=TIME_IN_FORCE_GTC,)
-            print('new stoploss price = ', json_object_status['price'],)"""
+            print('new stoploss price = ', json_object_status['price'],)
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
