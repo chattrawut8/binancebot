@@ -256,9 +256,9 @@ def change_new_stoploss(symbol,index):
         index = [x['reduceOnly'] for x in json_object].index(False)
         print('pass2')
         if json_object[index]['side'] == 'BUY':
-            sl_index = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
+            sl_index = index-1
         else:
-            sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
+            sl_index = index+1
         print('pass3')
         new_orders_id = orders[sl_index]['orderId']
         json_object[sl_index]['orderId'] = new_orders_id
