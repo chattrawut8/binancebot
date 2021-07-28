@@ -20,6 +20,12 @@ with open('orders_status.json', 'w') as outfile:
     json.dump('', outfile)
 with open('tptype.json', 'w') as outfile:
     json.dump('', outfile)
+clear_current_tp()
+
+def clear_current_tp():
+    dictionary ={"current_tp":0}
+    with open("current_tp.json", "w") as outfile:
+        json.dump(dictionary, outfile)
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
@@ -210,14 +216,14 @@ def change_new_stoploss(symbol,index):
             if json_object[main_index]['side'] == 'BUY':
                 if index == 0:
                     order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
-                    type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
+                    type="STOP_MARKET",stopPrice=json_object[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 elif index == 1:
                     order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
                     type="STOP_MARKET",stopPrice=json_object_status[0]['price'], timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 if index == 0:
                     order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
-                    type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
+                    type="STOP_MARKET",stopPrice=json_object[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 elif index == 1:
                     order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
                     type="STOP_MARKET",stopPrice=json_object_status[index]['price'], timeInForce=TIME_IN_FORCE_GTC,)
@@ -229,12 +235,9 @@ def change_new_stoploss(symbol,index):
         try:
             print('Replace new SL order')
             main_index = [x['reduceOnly'] for x in json_object].index(False)
-            print('pass')
             if json_object[main_index]['side'] == 'BUY': #json_object_status['price']
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="SELL", closePosition="true",
-                type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
-                orders = client.futures_get_open_orders(symbol=symbol)
-                print(orders)
+                type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
@@ -243,27 +246,47 @@ def change_new_stoploss(symbol,index):
             print("an exception occured - {}".format(e))
             return False
 
+def save_new_current_tp(current_tp):
+    dictionary ={"current_tp":int(current_tp)+1,}
+
+    with open("current_tp.json", "w") as outfile:
+        json.dump(dictionary, outfile)
+    
+    with open('current_tp.json', 'r') as openfile:
+        json_object_current_tp = json.load(openfile)
+    
+    print('change new TP | current TP is ',int(current_tp)+1)
+
+
 def change_stoploss(symbol):
     with open('tptype.json', 'r') as openfile:
         json_object = json.load(openfile)
     type_tp = json_object['type']
 
+    with open('current_tp.json', 'r') as openfile:
+        json_object_current_tp = json.load(openfile)
+    current_tp = json_object_current_tp['current_tp']
+
     if type_tp == '1to3': #risk/reward 1/3
-        if check_hit_TP(symbol,1) == True: 
+        if current_tp == 1 and check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
-        elif check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
+            save_new_current_tp(1)
+        elif current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
+            save_new_current_tp(0)
         else:
             print('dont have any change SL')
     elif type_tp == '1to2': #risk/reward 1/2
-        if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
+        if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
             change_new_stoploss(symbol,0)
+            save_new_current_tp(0)
         else:
             print('dont have any change SL')
     elif type_tp == '1to1': #risk/reward 1/1
-        if check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
+        if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             print('check_hit_TP pass')
             change_new_stoploss(symbol,0)
+            save_new_current_tp(0)
         else:
             print('dont have any change SL')
     else:
@@ -380,13 +403,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
 
                 save_orders_json(symbol)
-
                 if type_tp == '1to3':
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
-                
                 save_TP_type(type_tp)
+                clear_current_tp()
 
             elif side == "SELL":
                 order = client.futures_create_order(symbol=symbol, side=side,
@@ -406,13 +428,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
 
                 save_orders_json(symbol)
-
                 if type_tp == '1to3':
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
-
                 save_TP_type(type_tp)
+                clear_current_tp()
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
