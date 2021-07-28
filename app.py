@@ -336,9 +336,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
         
-        if stoploss_percent >= 15:
+        if stoploss_percent >= 50:
             type_tp = '1to1'
-        elif stoploss_percent >= 6:
+        elif stoploss_percent >= 40:
             type_tp = '1to2'
         else:
             type_tp = '1to3'
