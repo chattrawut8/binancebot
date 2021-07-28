@@ -97,6 +97,7 @@ def save_orders_status_1to3_json():
         
     print('\njson status')
     print(json_object_status)
+    print(dictionary)
 
 def save_orders_status_other_json():
 
