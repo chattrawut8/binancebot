@@ -20,7 +20,9 @@ with open('orders_status.json', 'w') as outfile:
     json.dump('', outfile)
 with open('tptype.json', 'w') as outfile:
     json.dump('', outfile)
-clear_current_tp()
+dictionary ={"current_tp":0}
+with open("current_tp.json", "w") as outfile:
+    json.dump(dictionary, outfile)
 
 def clear_current_tp():
     dictionary ={"current_tp":0}
