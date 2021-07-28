@@ -137,7 +137,6 @@ def check_hit_SL_TP(symbol):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
-            print(json_object[index-1]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
 
         else:
@@ -199,13 +198,13 @@ def change_new_stoploss(symbol,index):
     type_tp = json_object_type_tp['type']
 
     try:
-        index = [x['reduceOnly'] for x in json_object].index(False)
-        if json_object[index]['side'] == 'BUY':
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[index-1]['orderId'])
-            print('Closed old SL order ',json_object[index-1]['orderId'])
+        main_index = [x['reduceOnly'] for x in json_object].index(False)
+        if json_object[main_index]['side'] == 'BUY':
+            client.futures_cancel_order(symbol=symbol, orderId=json_object[main_index-1]['orderId'])
+            print('Closed old SL order ',json_object[main_index-1]['orderId'])
         else:
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[index+1]['orderId'])
-            print('Closed old SL order ',json_object[index+1]['orderId'])
+            client.futures_cancel_order(symbol=symbol, orderId=json_object[main_index+1]['orderId'])
+            print('Closed old SL order ',json_object[main_index+1]['orderId'])
         
     except Exception as e:
         print("an exception occured - {}".format(e))
