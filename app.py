@@ -137,6 +137,7 @@ def check_hit_SL_TP(symbol):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
+            print(json_object[index-1]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
 
         else:
