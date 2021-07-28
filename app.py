@@ -84,7 +84,7 @@ def save_orders_status_1to3_json():
         json_object = json.load(openfile)
 
     index = [x['reduceOnly'] for x in json_object].index(False)
-    
+
     dictionary =[
         {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
         {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
@@ -236,6 +236,7 @@ def change_new_stoploss(symbol,index):
         if type_tp == '1to3':
             try:
                 print('Replace new SL order')
+                print('SEND INDEX ', index)
                 main_index = [x['reduceOnly'] for x in json_object].index(False)
                 if json_object[main_index]['side'] == 'BUY': #main_index['stopPrice']
                     order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
