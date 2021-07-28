@@ -156,7 +156,7 @@ def check_hit_SL_TP(symbol):
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     print('!!!check hit SL or all TP!!!')
     return check_hit_SL_TP(symbol=symbol)
-asd
+#asd
 def check_hit_TP(symbol,index):
     print('npass1')
     with open('orders_status.json', 'r') as openfile:
