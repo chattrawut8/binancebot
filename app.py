@@ -82,28 +82,18 @@ def save_orders_status_1to3_json():
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     index = [x['reduceOnly'] for x in json_object].index(False)
-
-    for x in json_object:
-        print(x['orderId'],' ',x['reduceOnly'])
-
-    print("price ",json_object[index+1]['stopPrice'],"orderId ",json_object[index+1]['orderId'])
-    print("price ",json_object[index+2]['stopPrice'],"orderId ",json_object[index+1]['orderId'])
-
-    if json_object[index]['symbol'] == 'BUY':
-        print('BUY')
+    
+    print(json_object)
+    if json_object[index]['side'] == 'BUY':
         dictionary =[
             {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
             {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
-        with open("orders_status.json", "w") as outfile:
-            json.dump(dictionary, outfile)
-    elif json_object[index]['symbol'] == 'SELL':
-        print('SELL')
+    else:
         dictionary =[
             {"price":json_object[index-1]['stopPrice'],"orderId":json_object[index-1]['orderId']},
             {"price":json_object[index-2]['stopPrice'],"orderId":json_object[index-2]['orderId']}]
-        with open("orders_status.json", "w") as outfile:
-            json.dump(dictionary, outfile)
-
+    with open("orders_status.json", "w") as outfile:
+        json.dump(dictionary, outfile)
     with open('orders_status.json', 'r') as openfile:
         json_object_status = json.load(openfile)
     print('\njson status')
