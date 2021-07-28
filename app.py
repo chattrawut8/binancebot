@@ -249,6 +249,19 @@ def change_new_stoploss(symbol,index):
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
+    
+    try:
+        orders = client.futures_get_open_orders(symbol=symbol)
+        index = [x['reduceOnly'] for x in json_object].index(False)
+        if json_object[index]['side'] == 'BUY':
+            sl_index = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
+        else:
+            sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
+        new_orders_id = orders[sl_index]['orderId']
+        json_object[sl_index]['orderId'] = 134
+        json.dump(json_object, open("orders.json", "w"), indent = 4)
+    except Exception as e:
+        print("an exception occured - {}".format(e))
 
 def save_new_current_tp(current_tp):
     dictionary ={"current_tp":int(current_tp)+1,}
