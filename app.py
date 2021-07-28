@@ -68,7 +68,7 @@ def check_main_order_status(symbol):
 
 def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
-    orders.sort(key=lambda x: x['stopPrice'])
+    orders.sort(key=lambda x: float(x['stopPrice']))
 
     with open('orders.json', 'w') as outfile:
         json.dump(orders, outfile)
@@ -264,7 +264,7 @@ def change_new_stoploss(symbol,index):
         new_orders_price = neworder['stopPrice']
         json_object[sl_index]['orderId'] = new_orders_id
         json_object[sl_index]['stopPrice'] = new_orders_price
-        json_object.sort(key=lambda x: x['stopPrice'])
+        json_object.sort(key=lambda x: float(x['stopPrice']))
         with open("orders.json", "w") as outfile:
             json.dump(json_object, outfile)
         print('\n' , 'total order ' , len(json_object))
