@@ -170,14 +170,14 @@ def check_hit_TP(symbol,index):
 
     if type_tp == '1to3':
         try:
-            print('check stoploss order id ', json_object_status[index]['orderId'])
+            print('check TP order id ', json_object_status[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object_status[index]['orderId'])
             print('index is ',check_sl_order)
         except Exception as e:
             return True
     else:
         try:
-            print('check stoploss order id ', json_object_status['orderId'])
+            print('check TP order id ', json_object_status['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object_status['orderId'])
             print('index is ',check_sl_order)
         except Exception as e:
@@ -260,7 +260,13 @@ def change_new_stoploss(symbol,index):
             sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
         new_orders_id = orders[sl_index]['orderId']
         json_object[sl_index]['orderId'] = new_orders_id
+        json_object.sort(key=lambda x: x['stopPrice'])
         json.dump(json_object, open("orders.json", "w"), indent = 4)
+
+        print('\n' , 'total order ' , len(json_object))
+        for x in json_object:
+            print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
+
         print('Finish change SL order id json')
     except Exception as e:
         print("an exception occured - {}".format(e))
