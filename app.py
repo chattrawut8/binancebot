@@ -258,7 +258,7 @@ def change_new_stoploss(symbol,index):
         json_object[sl_index]['orderId'] = new_orders_id
         json_object[sl_index]['stopPrice'] = new_orders_price
         json_object.sort(key=lambda x: x['stopPrice'])
-        with open("orders.json.json", "w") as outfile:
+        with open("orders.json", "w") as outfile:
             json.dump(json_object, outfile)
         print('\n' , 'total order ' , len(json_object))
         for x in json_object:
