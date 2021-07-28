@@ -258,7 +258,7 @@ def change_new_stoploss(symbol,index):
         else:
             sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
         new_orders_id = orders[sl_index]['orderId']
-        json_object[sl_index]['orderId'] = 134
+        json_object[sl_index]['orderId'] = new_orders_id
         json.dump(json_object, open("orders.json", "w"), indent = 4)
         print('Finish change SL order id json')
     except Exception as e:
