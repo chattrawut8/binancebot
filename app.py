@@ -84,12 +84,11 @@ def save_orders_status_1to3_json():
         json_object = json.load(openfile)
 
     index = [x['reduceOnly'] for x in json_object].index(False)
-    dictionary[0] ={
+    print(json_object[index+1]['stopPrice'])
+    print(json_object[index+2]['stopPrice'])
+    dictionary ={
         "price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId'],
-        }
-    dictionary[0] ={
-        "price":json_object[index+1]['stopPrice'],"orderId":json_object[index+2]['orderId'],
-        }
+        "price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
