@@ -79,24 +79,25 @@ def save_orders_json(symbol):
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
 def save_orders_status_1to3_json():
-
+    print('npass1')
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
-
+    print('npass2')
     index = [x['reduceOnly'] for x in json_object].index(False)
-
+    print('npass3')
     dictionary =[
         {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
         {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
-
+    print('npass4')
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
+    print('npass5')
     with open('orders_status.json', 'r') as openfile:
         json_object_status = json.load(openfile)
-        
+    print('npass6')
     print('\njson status')
     print(json_object_status)
-
+    print('npass7')
 def save_orders_status_other_json():
 
     with open('orders.json', 'r') as openfile:
@@ -459,6 +460,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 save_orders_json(symbol)
                 print('pass1')
                 if type_tp == '1to3':
+                    print('pass1-1')
                     save_orders_status_1to3_json()
                     print('pass2')
                 else:
