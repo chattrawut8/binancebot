@@ -83,7 +83,6 @@ def save_orders_status_1to3_json():
         json_object = json.load(openfile)
     index = [x['reduceOnly'] for x in json_object].index(False)
     
-    print(json_object)
     if json_object[index]['side'] == 'BUY':
         dictionary =[
             {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
