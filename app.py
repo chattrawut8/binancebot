@@ -222,7 +222,7 @@ def change_new_stoploss(symbol,index):
             elif json_object[main_index]['side'] == 'SELL':
                 order = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=json_object_status[index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
-            print('new stoploss price = ', json_object_status['price'],)
+            print('new stoploss price = ', json_object_status[index]['price'],)
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
@@ -336,9 +336,9 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
         
-        if stoploss_percent >= 50:
+        if stoploss_percent >= 15:
             type_tp = '1to1'
-        elif stoploss_percent >= 30:
+        elif stoploss_percent >= 6:
             type_tp = '1to2'
         else:
             type_tp = '1to3'
