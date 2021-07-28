@@ -107,7 +107,7 @@ def save_orders_status_other_json():
     if json_object[index]['side'] == 'BUY':
         dictionary ={"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
     else:
-        dictionary ={"price":json_object[index-1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
+        dictionary ={"price":json_object[index-1]['stopPrice'],"orderId":json_object[index-1]['orderId']}
 
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
@@ -158,24 +158,19 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
     return check_hit_SL_TP(symbol=symbol)
 
 def check_hit_TP(symbol,index):
-    print('npass1')
     with open('orders_status.json', 'r') as openfile:
         json_object_status = json.load(openfile)
     print(json_object_status)
-    print('npass2')
 
     orders = client.futures_get_open_orders(symbol=symbol)
-    print('npass3')
     with open('tptype.json', 'r') as openfile:
         json_object_type_tp = json.load(openfile)
     type_tp = json_object_type_tp['type']
-    print('npass4')
     if type_tp == '1to3':
         try:
             print('check TP order id ', json_object_status[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object_status[index]['orderId'])
             print('index is ',check_sl_order)
-            print('npass5')
         except Exception as e:
             return True
     else:
@@ -306,11 +301,8 @@ def change_stoploss(symbol):
             change_new_stoploss(symbol,1)
             save_new_current_tp(1)
         elif current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
-            print('pass1')
             change_new_stoploss(symbol,0)
-            print('pass2')
             save_new_current_tp(0)
-            print('pass3')
         else:
             print('dont have any change SL')
     elif type_tp == '1to2': #risk/reward 1/2
