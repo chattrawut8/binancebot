@@ -241,6 +241,9 @@ def change_new_stoploss(symbol,index):
             print("an exception occured - {}".format(e))
             return False
     try:
+        with open('orders.json', 'r') as openfile:
+            json_object = json.load(openfile)
+
         orders = client.futures_get_open_orders(symbol=symbol)
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
@@ -252,7 +255,8 @@ def change_new_stoploss(symbol,index):
         json_object[sl_index]['orderId'] = new_orders_id
         json_object[sl_index]['stopPrice'] = new_orders_price
         json_object.sort(key=lambda x: x['stopPrice'])
-        json.dump(json_object, open("orders.json", "w"), indent = 4)
+        with open("orders.json.json", "w") as outfile:
+            json.dump(json_object, outfile)
         print('\n' , 'total order ' , len(json_object))
         for x in json_object:
             print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
