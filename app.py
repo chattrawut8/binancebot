@@ -206,7 +206,7 @@ def change_new_stoploss(symbol,index):
         else:
             sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
         client.futures_cancel_order(symbol=symbol, orderId=json_object[sl_index]['orderId'])
-        print('Closed old order ',json_object[sl_index]['orderId'])
+        print('Closed old SL order ',json_object[sl_index]['orderId'])
     except Exception as e:
         print("an exception occured - {}".format(e))
         return False
@@ -237,13 +237,15 @@ def change_new_stoploss(symbol,index):
         try:
             print('Replace new SL order')
             main_index = [x['reduceOnly'] for x in json_object].index(False)
-            if json_object[main_index]['side'] == 'BUY': #json_object_status['price']
+            if json_object[main_index]['side'] == 'BUY': #main_index['stopPrice']
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=main_index['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             print('new stoploss price = ', json_object_status['price'],)
+            orders = client.futures_get_open_orders(symbol=symbol)
+            print(orders)
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
