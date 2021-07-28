@@ -225,6 +225,8 @@ def change_new_stoploss(symbol,index):
             if json_object[main_index]['side'] == 'BUY': #json_object_status['price']
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
+                orders = client.futures_get_open_orders(symbol=symbol)
+                print(orders)
             elif json_object[main_index]['side'] == 'SELL':
                 order = client.futures_create_order(orderId=json_object_status['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=json_object_status['price'], timeInForce=TIME_IN_FORCE_GTC,)
