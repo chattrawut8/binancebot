@@ -104,7 +104,7 @@ def save_orders_status_other_json():
 
     index = [x['reduceOnly'] for x in json_object].index(False)
 
-    if json_object[index]['symbol'] == 'BUY':
+    if json_object[index]['side'] == 'BUY':
         dictionary ={"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
     else:
         dictionary ={"price":json_object[index-1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
