@@ -82,6 +82,7 @@ def save_orders_status_1to3_json():
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     index = [x['reduceOnly'] for x in json_object].index(False)
+    print(json_object)
     if json_object[index]['symbol'] == 'BUY':
         dictionary =[
             {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
@@ -155,7 +156,7 @@ def check_hit_SL_TP(symbol):
 def check_close_order(symbol): #เมื่อมีการชนเขต SLO หรือไม่เข้าออเดอร์ภายใน 5 แท่ง
     print('!!!check hit SL or all TP!!!')
     return check_hit_SL_TP(symbol=symbol)
-
+asd
 def check_hit_TP(symbol,index):
     print('npass1')
     with open('orders_status.json', 'r') as openfile:
