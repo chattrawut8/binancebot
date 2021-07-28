@@ -251,6 +251,8 @@ def change_new_stoploss(symbol,index):
             sl_index = index-1
         else:
             sl_index = index+1
+        
+        print('sl_index ',sl_index)
         new_orders_id = orders[sl_index]['orderId']
         new_orders_price = orders[sl_index]['stopPrice']
         json_object[sl_index]['orderId'] = new_orders_id
