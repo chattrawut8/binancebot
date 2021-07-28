@@ -455,14 +455,19 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
 
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
-
+                print('pass0')
                 save_orders_json(symbol)
+                print('pass1')
                 if type_tp == '1to3':
                     save_orders_status_1to3_json()
+                    print('pass2')
                 else:
                     save_orders_status_other_json()
+                    print('pass4')
                 save_TP_type(type_tp)
+                print('pass5')
                 clear_current_tp()
+                print('pass6')
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
             return False
