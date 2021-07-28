@@ -82,6 +82,8 @@ def save_orders_status_1to3_json():
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
     index = [x['reduceOnly'] for x in json_object].index(False)
+    for x in json_object:
+        print(x['orderId'],' ',x['reduceOnly'])
     print(json_object)
     if json_object[index]['symbol'] == 'BUY':
         dictionary =[
