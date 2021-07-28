@@ -214,15 +214,19 @@ def change_new_stoploss(symbol,index):
     if type_tp == '1to3':
         try:
             print('Replace new SL order')
-            print('SEND INDEX ', index)
+            print('send order TP index ', index)
             main_index = [x['reduceOnly'] for x in json_object].index(False)
             if json_object[main_index]['side'] == 'BUY': #main_index['stopPrice']
-                neworder = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
-                type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
+                if index == 0:
+                    neworder = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
+                    type="STOP_MARKET",stopPrice=2200, timeInForce=TIME_IN_FORCE_GTC,)
+                else:
+                    neworder = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="SELL", closePosition="true",
+                    type="STOP_MARKET",stopPrice=2300, timeInForce=TIME_IN_FORCE_GTC,)
             elif json_object[main_index]['side'] == 'SELL':
                 neworder = client.futures_create_order(orderId=json_object_status[index]['orderId'],symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=json_object_status[index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
-            print('new stoploss price = ', json_object_status[index]['price'],)
+            print('new stoploss price = ', json_object_status[index]['price'])
         except Exception as e:
             print("an exception occured - {}".format(e))
             return False
