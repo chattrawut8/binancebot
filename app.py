@@ -84,7 +84,7 @@ def save_orders_status_1to3_json():
         json_object = json.load(openfile)
 
     index = [x['reduceOnly'] for x in json_object].index(False)
-
+    print('HI')
     dictionary ={
         "price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId'],
         "price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}
@@ -141,7 +141,6 @@ def check_hit_SL_TP(symbol):
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
 
         else:
-            len_orders = int(len(json_object)) - 1
             check_sl_order = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
 
     except Exception as e:
