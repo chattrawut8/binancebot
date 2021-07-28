@@ -85,9 +85,14 @@ def save_orders_status_1to3_json():
     print('npass2')
     index = [x['reduceOnly'] for x in json_object].index(False)
     print('npass3')
-    dictionary =[
-        {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
-        {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
+    if json_object[index]['symbol'] == 'BUY':
+        dictionary =[
+            {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
+            {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
+    else:
+        dictionary =[
+            {"price":json_object[index-1]['stopPrice'],"orderId":json_object[index-1]['orderId']},
+            {"price":json_object[index-2]['stopPrice'],"orderId":json_object[index-2]['orderId']}]
     print('npass4')
     with open("orders_status.json", "w") as outfile:
         json.dump(dictionary, outfile)
