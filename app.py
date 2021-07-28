@@ -159,8 +159,8 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
 def check_hit_TP(symbol,index):
 
     with open('orders_status.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    print(json_object)
+        json_object_status = json.load(openfile)
+    print(json_object_status)
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
@@ -170,15 +170,15 @@ def check_hit_TP(symbol,index):
 
     if type_tp == '1to3':
         try:
-            print('check stoploss order id ', json_object[index]['orderId'])
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            print('check stoploss order id ', json_object_status[index]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object_status[index]['orderId'])
             print('index is ',check_sl_order)
         except Exception as e:
             return True
     else:
         try:
-            print('check stoploss order id ', json_object['orderId'])
-            check_sl_order = [x['orderId'] for x in orders].index(json_object['orderId'])
+            print('check stoploss order id ', json_object_status['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(json_object_status['orderId'])
             print('index is ',check_sl_order)
         except Exception as e:
             return True
@@ -202,9 +202,9 @@ def change_new_stoploss(symbol,index):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
-            sl_index = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
-        else:
             sl_index = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
+        else:
+            sl_index = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
         client.futures_cancel_order(symbol=symbol, orderId=json_object[sl_index]['orderId'])
         print('Closed old SL order ',json_object[sl_index]['orderId'])
     except Exception as e:
