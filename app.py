@@ -202,11 +202,11 @@ def change_new_stoploss(symbol,index):
     try:
         index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[index]['side'] == 'BUY':
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[index+1]['orderId'])
-            print('Closed old SL order ',json_object[index+1]['orderId'])
-        else:
             client.futures_cancel_order(symbol=symbol, orderId=json_object[index-1]['orderId'])
             print('Closed old SL order ',json_object[index-1]['orderId'])
+        else:
+            client.futures_cancel_order(symbol=symbol, orderId=json_object[index+1]['orderId'])
+            print('Closed old SL order ',json_object[index+1]['orderId'])
         
     except Exception as e:
         print("an exception occured - {}".format(e))
