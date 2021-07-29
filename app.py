@@ -326,6 +326,16 @@ def save_TP_type(tp_type):
     with open("tptype.json", "w") as outfile:
         json.dump(dictionary, outfile)
 
+def calculate_balance(stoploss_percent,balance):
+    if stoploss_percent >= 30:
+        return int(balance/2)
+    elif stoploss_percent >= 20:
+        return int(balance/1.5)
+    elif stoploss_percent >= 15:
+        return int(balance/1.2 )
+    else:
+        return balance
+
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
     try:
         precision = 3
@@ -353,12 +363,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         balance = int(float(pre_balance[1]['balance']))
         print('your balance is', balance, 'USDT')
 
-        if stoploss_percent >= 30:
-            balance_quantity = int(balance/2)
-        elif stoploss_percent >= 20:
-            balance_quantity = int(balance/1.5)
-        elif stoploss_percent >= 15:
-            balance_quantity = int(balance/1.2 )
+        balance_quantity = calculate_balance(stoploss_percent,balance)
 
         print('position size is ', balance_quantity, 'USDT')
 
