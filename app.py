@@ -328,13 +328,7 @@ def save_TP_type(tp_type):
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
     try:
-        pre_balance = client.futures_account_balance()
         precision = 3
-
-        balance = int(float(pre_balance[1]['balance']))
-
-        amount = (balance/1.025) / float(high)
-        quantity = float(round(amount, precision))
 
         tick_price = float(low)
         low_price = float(floor(tick_price))
@@ -346,10 +340,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         stoploss_percent = float(round(stoploss_percent, precision))
 
         print("stoploss % is ", stoploss_percent)
-        
-        quantity_tp = quantity/4
-        quantity_tp = float(round(quantity_tp, precision))
-        
+
         if stoploss_percent >= 15:
             type_tp = '1to1'
         elif stoploss_percent >= 6:
@@ -357,6 +348,25 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             type_tp = '1to3'
         print('type take profit = ',type_tp)
+
+        pre_balance = client.futures_account_balance()
+        balance = int(float(pre_balance[1]['balance']))
+        print('your balance is', balance, 'USDT')
+
+        if stoploss_percent >= 30:
+            balance_quantity = int(balance/2)
+        elif stoploss_percent >= 20:
+            balance_quantity = int(balance/1.5)
+        elif stoploss_percent >= 15:
+            balance_quantity = int(balance/1.2 )
+
+        print('position size is ', balance_quantity, 'USDT')
+
+        amount = (balance_quantity/1.025) / float(high)
+        quantity = float(round(amount, precision))
+        
+        quantity_tp = quantity/4
+        quantity_tp = float(round(quantity_tp, precision))
 
         if type_tp == '1to3':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
@@ -402,7 +412,6 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         else:
             print("position has not ready!")
 
-        print('your balance is', balance, 'USDT')
         print('your quantity', quantity)
         print('Tick price is ', high_price)
         
