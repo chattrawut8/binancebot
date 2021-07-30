@@ -47,6 +47,7 @@ def cancel_all_order(symbol):
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
+    print('current posotion quantity = ',orders[0]['positionAmt'])
     if float(orders[0]['positionAmt']) > 0:
         return True
     else:  return False
@@ -170,15 +171,7 @@ def check_hit_TP(symbol,index):
         try:
             print('check TP order id ', json_object_status[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object_status[index]['orderId'])
-            print(json_object_status[index]['orderId'])
-            print(orders[check_sl_order])
             print('index is ',check_sl_order)
-
-            with open('orders.json', 'r') as openfile:
-                json_object = json.load(openfile)
-            check_sl_order = [x['orderId'] for x in json_object].index(json_object_status[index]['orderId'])
-            print('index is ',check_sl_order)
-            print(json_object[check_sl_order])
 
         except Exception as e:
             return True
