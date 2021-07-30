@@ -210,7 +210,7 @@ def change_new_stoploss(symbol,index):
         
     except Exception as e:
         print("an exception occured - {}".format(e))
-    dist neworder = []
+    neworder = []
     if type_tp == '1to3':
         try:
             print('Replace new SL order')
