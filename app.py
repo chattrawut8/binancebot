@@ -339,6 +339,7 @@ def calculate_balance(stoploss_percent,balance):
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
     try:
         precision = 3
+        precision2 = 2
 
         tick_price = float(low)
         low_price = float(floor(tick_price))
@@ -347,7 +348,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         high_price = float(ceil(tick_price))
 
         stoploss_percent = float(((float(high_price) - float(low_price))/float(low_price))*100)
-        stoploss_percent = float(round(stoploss_percent, precision))
+        stoploss_percent = float(round(stoploss_percent, precision2))
 
         print("stoploss % is ", stoploss_percent)
 
@@ -376,39 +377,39 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         if type_tp == '1to3':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
             else: tp1 = low_price - (low_price*stoploss_percent/100)
-            tp1 = float(round(tp1, precision))
+            tp1 = float(round(tp1, precision2))
             print('Take Profit 1 = ',tp1)
 
             if side == "BUY": tp2 = (high_price*(stoploss_percent*2)/100)+high_price
             else: tp2 = low_price - (low_price*(stoploss_percent*2)/100)
-            tp2 = float(round(tp2, precision))
+            tp2 = float(round(tp2, precision2))
             print('Take Profit 2 = ',tp2)
 
             if side == "BUY": final_tp = (high_price*(stoploss_percent*3)/100)+high_price
             else: final_tp = low_price - (low_price*(stoploss_percent*3)/100)
-            final_tp = float(round(final_tp, precision))
+            final_tp = float(round(final_tp, precision2))
             print('Take Profit 3 = ',final_tp)
 
         if type_tp == '1to2':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
             else: tp1 = low_price - (low_price*stoploss_percent/100)
-            tp1 = float(round(tp1, precision))
+            tp1 = float(round(tp1, precision2))
             print('Take Profit 1 = ',tp1)
 
             if side == "BUY": final_tp = (high_price*(stoploss_percent*2)/100)+high_price
             else: final_tp = low_price - (low_price*(stoploss_percent*2)/100)
-            final_tp = float(round(final_tp, precision))
+            final_tp = float(round(final_tp, precision2))
             print('Take Profit 2 = ',final_tp)
 
         if type_tp == '1to1':
             if side == "BUY": tp1 = (high_price*(stoploss_percent/2)/100)+high_price
             else: tp1 = low_price - (low_price*(stoploss_percent/2)/100)
-            tp1 = float(round(tp1, precision))
+            tp1 = float(round(tp1, precision2))
             print('Take Profit 1 = ',tp1)
 
             if side == "BUY": final_tp = (high_price*stoploss_percent/100)+high_price
             else: final_tp = low_price - (low_price*stoploss_percent/100)
-            final_tp = float(round(final_tp, precision))
+            final_tp = float(round(final_tp, precision2))
             print('Take Profit 2 = ',final_tp)
 
         position_status = check_position_status(symbol)
