@@ -170,6 +170,8 @@ def check_hit_TP(symbol,index):
         try:
             print('check TP order id ', json_object_status[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(json_object_status[index]['orderId'])
+            print(index)
+            print(json_object_status)
             print('index is ',check_sl_order)
         except Exception as e:
             return True
