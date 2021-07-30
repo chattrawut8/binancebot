@@ -178,7 +178,7 @@ def check_hit_TP(symbol,index):
                 json_object = json.load(openfile)
             check_sl_order = [x['orderId'] for x in json_object].index(json_object_status[index]['orderId'])
             print('index is ',check_sl_order)
-            print(orders[check_sl_order])
+            print(json_object[check_sl_order])
 
         except Exception as e:
             return True
