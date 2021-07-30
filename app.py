@@ -176,7 +176,8 @@ def check_hit_TP(symbol,index):
 
             with open('orders.json', 'r') as openfile:
                 json_object = json.load(openfile)
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[index]['orderId'])
+            check_sl_order = [x['orderId'] for x in json_object].index(json_object_status[index]['orderId'])
+            print('index is ',check_sl_order)
             print(orders[check_sl_order])
 
         except Exception as e:
