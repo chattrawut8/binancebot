@@ -480,7 +480,6 @@ def check():
     if check_close_order(symbol) == False:
         print('chack change stoloss')
         change_stoploss(symbol)
-    check_candle(symbol)
     return {
             "code": "success",
             "message": "check executed"
