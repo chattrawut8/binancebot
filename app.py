@@ -16,6 +16,7 @@ client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
 config.all_orders = []
 config.orders_status = []
+config.neworder = []
 config.type_tp = ''
 config.current_tp = 0
 
@@ -168,7 +169,6 @@ def change_new_stoploss(symbol,index):
         
     except Exception as e:
         print("an exception occured - {}".format(e))
-    neworder = []
     if config.type_tp == '1to3':
         try:
             print('Replace new SL order')
@@ -176,17 +176,17 @@ def change_new_stoploss(symbol,index):
             main_index = [x['reduceOnly'] for x in config.all_orders].index(False)
             if config.all_orders[main_index]['side'] == 'BUY': #main_index['stopPrice'] config.order_status[index-1]['stopPrice']
                 if index == 0:
-                    neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
+                    config.neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.all_orders[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 else:
-                    neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
+                    config.neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.order_status[index-1]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             elif config.all_orders[main_index]['side'] == 'SELL':
                 if index == 0:
-                    neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
+                    config.neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.all_orders[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 else:
-                    neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
+                    config.neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.order_status[index-1]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             print('new stoploss price = ', config.order_status[index-1]['stopPrice'])
         except Exception as e:
@@ -197,10 +197,10 @@ def change_new_stoploss(symbol,index):
             print('Replace new SL order')
             main_index = [x['reduceOnly'] for x in config.all_orders].index(False)
             if config.all_orders[main_index]['side'] == 'BUY': #main_index['stopPrice']
-                neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
+                config.neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=config.order_status['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             elif config.all_orders[main_index]['side'] == 'SELL':
-                neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
+                config.neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=config.order_status['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             print('new stoploss price = ', config.order_status['stopPrice'],)
         except Exception as e:
@@ -215,9 +215,9 @@ def change_new_stoploss(symbol,index):
             sl_index = index+1
         
         print('sl_index ',sl_index)
-        print('new SL order',neworder)
-        new_orders_id = neworder['orderId']
-        new_orders_price = neworder['stopPrice']
+        print('new SL order',config.neworder)
+        new_orders_id = config.neworder['orderId']
+        new_orders_price = config.neworder['stopPrice']
         config.all_orders[sl_index]['orderId'] = new_orders_id
         config.all_orders[sl_index]['stopPrice'] = new_orders_price
         config.all_orders.sort(key=lambda x: float(x['stopPrice']))
