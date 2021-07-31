@@ -26,7 +26,7 @@ def clear_current_tp():
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
     client = Client(API_KEY, API_SECRET)
-
+    config.candle_count = 0
     for x in config.all_orders:
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
@@ -101,6 +101,7 @@ def check_hit_SL_TP(symbol):
 
     try:
         index = [x['reduceOnly'] for x in orders].index(False)
+        check_candle(symbol)
     except Exception as e:
         print('can not find main orders')
         client = Client(API_KEY, API_SECRET)
@@ -268,11 +269,13 @@ def calculate_balance(stoploss_percent,balance):
     else:
         return balance
 def check_candle(symbol):
-    if check_main_order_status(symbol) == True and check_position_status(symbol) == False:
-        if config.candle_count < 5:
-            config.candle_count = config.candle_count+1
-        elif config.candle_count >= 5:
-            config.candle_count = 0
+    if check_position_status(symbol) == False:
+        if config.candle_count < 1200:
+            print('total time pass main order not hit = ', config.candle_count , ' minute')
+            print('total time pass main order not hit = ', int(config.candle_count)/240 , 'hour')
+            config.candle_count = config.candle_count + 1
+        elif config.candle_count >= 1200:
+            print('Close all orders 4h Candle more than 5 unit')
             cancel_all_order(symbol)
 
 def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET): 
@@ -477,6 +480,7 @@ def check():
     if check_close_order(symbol) == False:
         print('chack change stoloss')
         change_stoploss(symbol)
+    check_candle(symbol)
     return {
             "code": "success",
             "message": "check executed"
