@@ -16,17 +16,12 @@ client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
 with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
-with open('orders_status.json', 'w') as outfile:
-    json.dump('', outfile)
+config.orders_status = []
 config.type_tp = ''
-dictionary ={"current_tp":0}
-with open("current_tp.json", "w") as outfile:
-    json.dump(dictionary, outfile)
+config.current_tp = 0
 
 def clear_current_tp():
-    dictionary ={"current_tp":0}
-    with open("current_tp.json", "w") as outfile:
-        json.dump(dictionary, outfile)
+    config.current_tp = 0
 
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
@@ -148,8 +143,6 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
     return check_hit_SL_TP(symbol=symbol)
 
 def check_hit_TP(symbol,index):
-    with open('orders_status.json', 'r') as openfile:
-        config.order_status = json.load(openfile)
     print(config.order_status)
 
     orders = client.futures_get_open_orders(symbol=symbol)
@@ -174,8 +167,6 @@ def check_hit_TP(symbol,index):
 
 def change_new_stoploss(symbol,index):
     print('Have change new stoploss!!')
-    with open('orders_status.json', 'r') as openfile:
-        config.order_status = json.load(openfile)
 
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
@@ -259,48 +250,34 @@ def change_new_stoploss(symbol,index):
     except Exception as e:
         print("an exception occured - {}".format(e))
 
-def save_new_current_tp(current_tp):
-    dictionary ={"current_tp":int(current_tp)+1,}
-
-    with open("current_tp.json", "w") as outfile:
-        json.dump(dictionary, outfile)
-    
-    with open('current_tp.json', 'r') as openfile:
-        json_object_current_tp = json.load(openfile)
-    
-    print('change new TP | current TP is ',int(current_tp)+1)
-
-
 def change_stoploss(symbol):
 
-    with open('current_tp.json', 'r') as openfile:
-        json_object_current_tp = json.load(openfile)
-    current_tp = json_object_current_tp['current_tp']
-
     if config.type_tp == '1to3': #risk/reward 1/3
-        if current_tp == 1 and check_hit_TP(symbol,1) == True: 
+        if config.current_tp == 1 and check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
-            save_new_current_tp(1)
-        elif current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
+            config.current_tp = 2
+        elif config.current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/3
             change_new_stoploss(symbol,0)
-            save_new_current_tp(0)
+            config.current_tp = 1
         else:
             print('dont have any change SL')
     elif config.type_tp == '1to2': #risk/reward 1/2
-        if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
+        if config.current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
             change_new_stoploss(symbol,0)
-            save_new_current_tp(0)
+            config.current_tp = 1
         else:
             print('dont have any change SL')
     elif config.type_tp == '1to1': #risk/reward 1/1
-        if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
+        if config.current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             print('check_hit_TP pass')
             change_new_stoploss(symbol,0)
-            save_new_current_tp(0)
+            config.current_tp = 1
         else:
             print('dont have any change SL')
     else:
         print('error')
+    
+    print('change new TP | current TP is ',config.current_tp)
 
 def calculate_balance(stoploss_percent,balance):
     if stoploss_percent >= 30:
