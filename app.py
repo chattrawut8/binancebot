@@ -14,8 +14,7 @@ client = Client(API_KEY, API_SECRET) #testnet=True
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
-with open('orders.json', 'w') as outfile:
-    json.dump('', outfile)
+config.all_orders = []
 config.orders_status = []
 config.type_tp = ''
 config.current_tp = 0
@@ -26,18 +25,15 @@ def clear_current_tp():
 def cancel_all_order(symbol):
     #client.futures_cancel_all_open_orders(symbol=symbol)
     client = Client(API_KEY, API_SECRET)
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
 
-    for x in json_object:
+    for x in config.all_orders:
         try:
             client.futures_cancel_order(symbol=symbol, orderId=x['orderId'])
         except BinanceAPIException as e:
             client = Client(API_KEY, API_SECRET)
             continue
     
-    with open('orders.json', 'w') as outfile:
-        json.dump('', outfile)
+    config.all_orders = []
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
@@ -65,49 +61,40 @@ def save_orders_json(symbol):
     orders = client.futures_get_open_orders(symbol=symbol)
     orders.sort(key=lambda x: float(x['stopPrice']))
 
-    with open('orders.json', 'w') as outfile:
-        json.dump(orders, outfile)
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    print('\n' , 'total order ' , len(json_object))
-    for x in json_object:
+    config.all_orders = orders
+
+    print('\n' , 'total order ' , len(config.all_orders))
+    for x in config.all_orders:
         print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
 def save_orders_status_1to3_json():
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    index = [x['reduceOnly'] for x in json_object].index(False)
+
+    index = [x['reduceOnly'] for x in config.all_orders].index(False)
     
-    if json_object[index]['side'] == 'BUY':
+    if config.all_orders[index]['side'] == 'BUY':
         config.order_status =[
-            {"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']},
-            {"price":json_object[index+2]['stopPrice'],"orderId":json_object[index+2]['orderId']}]
+            {"price":config.all_orders[index+1]['stopPrice'],"orderId":config.all_orders[index+1]['orderId']},
+            {"price":config.all_orders[index+2]['stopPrice'],"orderId":config.all_orders[index+2]['orderId']}]
     else:
         config.order_status =[
-            {"price":json_object[index-1]['stopPrice'],"orderId":json_object[index-1]['orderId']},
-            {"price":json_object[index-2]['stopPrice'],"orderId":json_object[index-2]['orderId']}]
+            {"price":config.all_orders[index-1]['stopPrice'],"orderId":config.all_orders[index-1]['orderId']},
+            {"price":config.all_orders[index-2]['stopPrice'],"orderId":config.all_orders[index-2]['orderId']}]
     print('\njson status')
     print(config.order_status)
 def save_orders_status_other_json():
 
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
+    index = [x['reduceOnly'] for x in config.all_orders].index(False)
 
-    index = [x['reduceOnly'] for x in json_object].index(False)
-
-    if json_object[index]['side'] == 'BUY':
-        config.order_status ={"price":json_object[index+1]['stopPrice'],"orderId":json_object[index+1]['orderId']}
+    if config.all_orders[index]['side'] == 'BUY':
+        config.order_status ={"price":config.all_orders[index+1]['stopPrice'],"orderId":config.all_orders[index+1]['orderId']}
     else:
-        config.order_status ={"price":json_object[index-1]['stopPrice'],"orderId":json_object[index-1]['orderId']}
+        config.order_status ={"price":config.all_orders[index-1]['stopPrice'],"orderId":config.all_orders[index-1]['orderId']}
         
     print('\njson status')
     print(config.order_status)
         
 def check_hit_SL_TP(symbol):
     client = Client(API_KEY, API_SECRET)
-    
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
@@ -123,12 +110,12 @@ def check_hit_SL_TP(symbol):
             return True
 
     try:
-        index = [x['reduceOnly'] for x in json_object].index(False)
-        if json_object[index]['side'] == 'BUY':
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[index-1]['orderId'])
+        index = [x['reduceOnly'] for x in config.all_orders].index(False)
+        if config.all_orders[index]['side'] == 'BUY':
+            check_sl_order = [x['orderId'] for x in orders].index(config.all_orders[index-1]['orderId'])
 
         else:
-            check_sl_order = [x['orderId'] for x in orders].index(json_object[index+1]['orderId'])
+            check_sl_order = [x['orderId'] for x in orders].index(config.all_orders[index+1]['orderId'])
 
     except Exception as e:
         print('\n Has hit ST order!')
@@ -168,19 +155,16 @@ def check_hit_TP(symbol,index):
 def change_new_stoploss(symbol,index):
     print('Have change new stoploss!!')
 
-    with open('orders.json', 'r') as openfile:
-        json_object = json.load(openfile)
-
     orders = client.futures_get_open_orders(symbol=symbol)
 
     try:
-        main_index = [x['reduceOnly'] for x in json_object].index(False)
-        if json_object[main_index]['side'] == 'BUY':
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[main_index-1]['orderId'])
-            print('Closed old SL order ',json_object[main_index-1]['orderId'])
+        main_index = [x['reduceOnly'] for x in config.all_orders].index(False)
+        if config.all_orders[main_index]['side'] == 'BUY':
+            client.futures_cancel_order(symbol=symbol, orderId=config.all_orders[main_index-1]['orderId'])
+            print('Closed old SL order ',config.all_orders[main_index-1]['orderId'])
         else:
-            client.futures_cancel_order(symbol=symbol, orderId=json_object[main_index+1]['orderId'])
-            print('Closed old SL order ',json_object[main_index+1]['orderId'])
+            client.futures_cancel_order(symbol=symbol, orderId=config.all_orders[main_index+1]['orderId'])
+            print('Closed old SL order ',config.all_orders[main_index+1]['orderId'])
         
     except Exception as e:
         print("an exception occured - {}".format(e))
@@ -189,18 +173,18 @@ def change_new_stoploss(symbol,index):
         try:
             print('Replace new SL order')
             print('send order TP index ', index)
-            main_index = [x['reduceOnly'] for x in json_object].index(False)
-            if json_object[main_index]['side'] == 'BUY': #main_index['stopPrice'] config.order_status[index-1]['stopPrice']
+            main_index = [x['reduceOnly'] for x in config.all_orders].index(False)
+            if config.all_orders[main_index]['side'] == 'BUY': #main_index['stopPrice'] config.order_status[index-1]['stopPrice']
                 if index == 0:
                     neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
-                    type="STOP_MARKET",stopPrice=json_object[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
+                    type="STOP_MARKET",stopPrice=config.all_orders[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 else:
                     neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.order_status[index-1]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
-            elif json_object[main_index]['side'] == 'SELL':
+            elif config.all_orders[main_index]['side'] == 'SELL':
                 if index == 0:
                     neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
-                    type="STOP_MARKET",stopPrice=json_object[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
+                    type="STOP_MARKET",stopPrice=config.all_orders[main_index]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
                 else:
                     neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                     type="STOP_MARKET",stopPrice=config.order_status[index-1]['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
@@ -211,11 +195,11 @@ def change_new_stoploss(symbol,index):
     else:
         try:
             print('Replace new SL order')
-            main_index = [x['reduceOnly'] for x in json_object].index(False)
-            if json_object[main_index]['side'] == 'BUY': #main_index['stopPrice']
+            main_index = [x['reduceOnly'] for x in config.all_orders].index(False)
+            if config.all_orders[main_index]['side'] == 'BUY': #main_index['stopPrice']
                 neworder = client.futures_create_order(symbol=symbol, side="SELL", closePosition="true",
                 type="STOP_MARKET",stopPrice=config.order_status['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
-            elif json_object[main_index]['side'] == 'SELL':
+            elif config.all_orders[main_index]['side'] == 'SELL':
                 neworder = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=config.order_status['stopPrice'], timeInForce=TIME_IN_FORCE_GTC,)
             print('new stoploss price = ', config.order_status['stopPrice'],)
@@ -223,12 +207,9 @@ def change_new_stoploss(symbol,index):
             print("an exception occured - {}".format(e))
 
     try:
-        with open('orders.json', 'r') as openfile:
-            json_object = json.load(openfile)
-
         orders = client.futures_get_open_orders(symbol=symbol)
-        index = [x['reduceOnly'] for x in json_object].index(False)
-        if json_object[index]['side'] == 'BUY':
+        index = [x['reduceOnly'] for x in config.all_orders].index(False)
+        if config.all_orders[index]['side'] == 'BUY':
             sl_index = index-1
         else:
             sl_index = index+1
@@ -237,13 +218,11 @@ def change_new_stoploss(symbol,index):
         print('new SL order',neworder)
         new_orders_id = neworder['orderId']
         new_orders_price = neworder['stopPrice']
-        json_object[sl_index]['orderId'] = new_orders_id
-        json_object[sl_index]['stopPrice'] = new_orders_price
-        json_object.sort(key=lambda x: float(x['stopPrice']))
-        with open("orders.json", "w") as outfile:
-            json.dump(json_object, outfile)
-        print('\n' , 'total order ' , len(json_object))
-        for x in json_object:
+        config.all_orders[sl_index]['orderId'] = new_orders_id
+        config.all_orders[sl_index]['stopPrice'] = new_orders_price
+        config.all_orders.sort(key=lambda x: float(x['stopPrice']))
+        print('\n' , 'total order ' , len(config.all_orders))
+        for x in config.all_orders:
             print('order ID ' , x['orderId'] , ' | ', ' side ' , x['side'] , ' price ' , x['stopPrice'] , ' | ' , ' reduceOnly ' , x['reduceOnly'] )
 
         print('Finish change SL order id json')
