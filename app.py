@@ -149,6 +149,8 @@ def check_close_order(symbol): #เมื่อมีการชนเขต SL
     return check_hit_SL_TP(symbol=symbol)
 
 def check_hit_TP(symbol,index):
+    with open('orders_status.json', 'r') as openfile:
+        config.order_status = json.load(openfile)
     print(config.order_status)
 
     orders = client.futures_get_open_orders(symbol=symbol)
@@ -175,6 +177,8 @@ def check_hit_TP(symbol,index):
 
 def change_new_stoploss(symbol,index):
     print('Have change new stoploss!!')
+    with open('orders_status.json', 'r') as openfile:
+        config.order_status = json.load(openfile)
 
     with open('orders.json', 'r') as openfile:
         json_object = json.load(openfile)
