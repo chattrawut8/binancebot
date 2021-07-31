@@ -18,8 +18,7 @@ with open('orders.json', 'w') as outfile:
     json.dump('', outfile)
 with open('orders_status.json', 'w') as outfile:
     json.dump('', outfile)
-with open('tptype.json', 'w') as outfile:
-    json.dump('', outfile)
+config.type_tp = ''
 dictionary ={"current_tp":0}
 with open("current_tp.json", "w") as outfile:
     json.dump(dictionary, outfile)
@@ -154,10 +153,8 @@ def check_hit_TP(symbol,index):
     print(config.order_status)
 
     orders = client.futures_get_open_orders(symbol=symbol)
-    with open('tptype.json', 'r') as openfile:
-        json_object_type_tp = json.load(openfile)
-    type_tp = json_object_type_tp['type']
-    if type_tp == '1to3':
+
+    if config.type_tp == '1to3':
         try:
             print('check TP order id ', config.order_status[index]['orderId'])
             check_sl_order = [x['orderId'] for x in orders].index(config.order_status[index]['orderId'])
@@ -185,10 +182,6 @@ def change_new_stoploss(symbol,index):
 
     orders = client.futures_get_open_orders(symbol=symbol)
 
-    with open('tptype.json', 'r') as openfile:
-        json_object_type_tp = json.load(openfile)
-    type_tp = json_object_type_tp['type']
-
     try:
         main_index = [x['reduceOnly'] for x in json_object].index(False)
         if json_object[main_index]['side'] == 'BUY':
@@ -201,7 +194,7 @@ def change_new_stoploss(symbol,index):
     except Exception as e:
         print("an exception occured - {}".format(e))
     neworder = []
-    if type_tp == '1to3':
+    if config.type_tp == '1to3':
         try:
             print('Replace new SL order')
             print('send order TP index ', index)
@@ -279,15 +272,12 @@ def save_new_current_tp(current_tp):
 
 
 def change_stoploss(symbol):
-    with open('tptype.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    type_tp = json_object['type']
 
     with open('current_tp.json', 'r') as openfile:
         json_object_current_tp = json.load(openfile)
     current_tp = json_object_current_tp['current_tp']
 
-    if type_tp == '1to3': #risk/reward 1/3
+    if config.type_tp == '1to3': #risk/reward 1/3
         if current_tp == 1 and check_hit_TP(symbol,1) == True: 
             change_new_stoploss(symbol,1)
             save_new_current_tp(1)
@@ -296,13 +286,13 @@ def change_stoploss(symbol):
             save_new_current_tp(0)
         else:
             print('dont have any change SL')
-    elif type_tp == '1to2': #risk/reward 1/2
+    elif config.type_tp == '1to2': #risk/reward 1/2
         if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 1/2
             change_new_stoploss(symbol,0)
             save_new_current_tp(0)
         else:
             print('dont have any change SL')
-    elif type_tp == '1to1': #risk/reward 1/1
+    elif config.type_tp == '1to1': #risk/reward 1/1
         if current_tp == 0 and check_hit_TP(symbol,0) == True: #เป้าแรก ทำกำไร25% ที่ 0.5/1
             print('check_hit_TP pass')
             change_new_stoploss(symbol,0)
@@ -311,11 +301,6 @@ def change_stoploss(symbol):
             print('dont have any change SL')
     else:
         print('error')
-
-def save_TP_type(tp_type):
-    dictionary ={"type":tp_type}
-    with open("tptype.json", "w") as outfile:
-        json.dump(dictionary, outfile)
 
 def calculate_balance(stoploss_percent,balance):
     if stoploss_percent >= 30:
@@ -351,12 +336,12 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         print("stoploss % is ", stoploss_percent)
 
         if stoploss_percent >= 15:
-            type_tp = '1to1'
+            config.type_tp = '1to1'
         elif stoploss_percent >= 6:
-            type_tp = '1to2'
+            config.type_tp = '1to2'
         else:
-            type_tp = '1to3'
-        print('type take profit = ',type_tp)
+            config.type_tp = '1to3'
+        print('type take profit = ',config.type_tp)
 
         pre_balance = client.futures_account_balance()
         balance = int(float(pre_balance[1]['balance']))
@@ -372,7 +357,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
         quantity_tp = quantity/4
         quantity_tp = float(round(quantity_tp, precision))
 
-        if type_tp == '1to3':
+        if config.type_tp == '1to3':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
             else: tp1 = low_price - (low_price*stoploss_percent/100)
             tp1 = float(round(tp1, precision2))
@@ -388,7 +373,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             final_tp = float(round(final_tp, precision2))
             print('Take Profit 3 = ',final_tp)
 
-        if type_tp == '1to2':
+        if config.type_tp == '1to2':
             if side == "BUY": tp1 = (high_price*stoploss_percent/100)+high_price
             else: tp1 = low_price - (low_price*stoploss_percent/100)
             tp1 = float(round(tp1, precision2))
@@ -399,7 +384,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
             final_tp = float(round(final_tp, precision2))
             print('Take Profit 2 = ',final_tp)
 
-        if type_tp == '1to1':
+        if config.type_tp == '1to1':
             if side == "BUY": tp1 = (high_price*(stoploss_percent/2)/100)+high_price
             else: tp1 = low_price - (low_price*(stoploss_percent/2)/100)
             tp1 = float(round(tp1, precision2))
@@ -434,7 +419,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-                if type_tp == '1to3':
+                if config.type_tp == '1to3':
                     order = client.futures_create_order(symbol=symbol, side="SELL", reduceOnly="true",
                     type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
@@ -445,11 +430,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 type="STOP_MARKET",stopPrice=low_price, timeInForce=TIME_IN_FORCE_GTC,)
 
                 save_orders_json(symbol)
-                if type_tp == '1to3':
+                if config.type_tp == '1to3':
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
-                save_TP_type(type_tp)
+
                 clear_current_tp()
 
             elif side == "SELL":
@@ -459,7 +444,7 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
                 type="TAKE_PROFIT_MARKET",stopPrice=tp1, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
-                if type_tp == '1to3':
+                if config.type_tp == '1to3':
                     order = client.futures_create_order(symbol=symbol, side="BUY", reduceOnly="true",
                     type="TAKE_PROFIT_MARKET",stopPrice=tp2, quantity=quantity_tp, timeInForce=TIME_IN_FORCE_GTC,)
 
@@ -469,11 +454,11 @@ def open_position(side, symbol, high, low, order_type=ORDER_TYPE_MARKET):
                 order = client.futures_create_order(symbol=symbol, side="BUY", closePosition="true",
                 type="STOP_MARKET",stopPrice=high_price, timeInForce=TIME_IN_FORCE_GTC,)
                 save_orders_json(symbol)
-                if type_tp == '1to3':
+                if config.type_tp == '1to3':
                     save_orders_status_1to3_json()
                 else:
                     save_orders_status_other_json()
-                save_TP_type(type_tp)
+
                 clear_current_tp()
         else:
             print('--- Order/Position has ready can not open new order!!! ---')
