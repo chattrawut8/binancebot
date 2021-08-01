@@ -14,7 +14,6 @@ client = Client(API_KEY, API_SECRET) #testnet=True
 print("Start Bot")
 client.futures_cancel_all_open_orders(symbol='ETHUSDT')
 
-config.all_orders = []
 config.orders_status = []
 config.neworder = []
 config.type_tp = ''
@@ -33,8 +32,6 @@ def cancel_all_order(symbol):
         except BinanceAPIException as e:
             client = Client(API_KEY, API_SECRET)
             continue
-    
-    config.all_orders = []
 
 def check_position_status(symbol):
     orders = client.futures_position_information(symbol=symbol)
