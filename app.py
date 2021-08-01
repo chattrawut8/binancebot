@@ -112,7 +112,9 @@ def check_hit_SL_TP(symbol):
             return True
 
     try:
+        print('index' , [x['reduceOnly'] for x in config.all_orders].index(False))
         index = [x['reduceOnly'] for x in config.all_orders].index(False)
+        print('all_orders' , config.all_orders)
         if config.all_orders[index]['side'] == 'BUY':
             check_sl_order = [x['orderId'] for x in orders].index(config.all_orders[index-1]['orderId'])
 
@@ -271,9 +273,9 @@ def calculate_balance(stoploss_percent,balance):
 def check_candle(symbol):
     if check_position_status(symbol) == False:
         if config.candle_count < 1200:
+            config.candle_count = config.candle_count + 1
             print('total time pass main order not hit = ', config.candle_count , ' minute')
             print('total time pass main order not hit = ', int(config.candle_count)/240 , 'hour')
-            config.candle_count = config.candle_count + 1
         elif config.candle_count >= 1200:
             print('Close all orders 4h Candle more than 5 unit')
             cancel_all_order(symbol)
