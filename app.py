@@ -112,9 +112,9 @@ def check_hit_SL_TP(symbol):
             return True
 
     try:
+        print('all_orders' , config.all_orders)
         print('index' , [x['reduceOnly'] for x in config.all_orders].index(False))
         index = [x['reduceOnly'] for x in config.all_orders].index(False)
-        print('all_orders' , config.all_orders)
         if config.all_orders[index]['side'] == 'BUY':
             check_sl_order = [x['orderId'] for x in orders].index(config.all_orders[index-1]['orderId'])
 
